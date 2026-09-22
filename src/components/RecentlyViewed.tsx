@@ -3,9 +3,11 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Heart, Check, ShoppingBag, ArrowUpRight, Sparkles, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Check, ShoppingBag, ArrowUpRight, ArrowRight, Sparkles, Clock } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useCart } from "@/context/CartContext";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import ProductCard from "@/components/product/ProductCard";
 
 const recentlyViewedProducts = [
   { 
@@ -135,11 +137,16 @@ export default function RecentlyViewed({ basePath = "" }: { basePath?: string })
     }
   };
 
+  if (!recentlyViewedProducts || recentlyViewedProducts.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="w-full bg-transparent text-zinc-900 dark:text-white py-16 select-none overflow-hidden relative">
-      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20">
-        {/* Editorial Luxury Header */}
-        <div className="w-full mb-8">
+    <section ref={ref} className="w-full bg-transparent text-zinc-900 dark:text-white py-16 select-none overflow-hidden relative">
+      <div className="w-full max-w-[1600px] mx-auto px-0 md:px-6 md:sm:px-12 md:md:px-16 md:lg:px-20">
+        
+        {/* Desktop Editorial Luxury Header */}
+        <div className="hidden md:block w-full mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-200/70 dark:border-zinc-800/80 pb-6 text-left">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -168,10 +175,27 @@ export default function RecentlyViewed({ basePath = "" }: { basePath?: string })
         </div>
       </div>
 
-      {/* Horizontal Scroll Track */}
+      {/* Mobile Editorial Header */}
+      <div className="md:hidden border-b border-zinc-200/70 dark:border-zinc-800/80 pb-5 mx-4 mb-4">
+        <SectionHeading
+          variant="playfair"
+          className="text-zinc-950 dark:text-zinc-50"
+          title={<>RECENTLY <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">VIEWED</span></>}
+          action={
+            <Link
+              href={`${basePath}/recently-viewed`}
+              className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors mt-2"
+            >
+              <span>VIEW ALL</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          }
+        />
+      </div>
+
+      {/* Desktop Horizontal Scroll Track */}
       <div
-        ref={ref}
-        className={`w-full transition-all duration-1000 ease-out ${
+        className={`hidden md:block w-full transition-all duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
@@ -462,6 +486,35 @@ export default function RecentlyViewed({ basePath = "" }: { basePath?: string })
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Horizontal Carousel */}
+      <div 
+        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
+        {recentlyViewedProducts.map((p) => (
+          <div 
+            key={p.id} 
+            className="w-[155px] sm:w-[170px] shrink-0 flex flex-col justify-between snap-start"
+          >
+            <ProductCard 
+              id={p.id}
+              name={p.name}
+              brand={p.brand}
+              price={p.price}
+              originalPrice={p.originalPrice}
+              image={p.image}
+              hoverImage={p.hoverImage}
+              badge={p.badge}
+              rating={p.rating}
+              colors={RECENTLY_VIEWED_COLORS[p.id]}
+              basePath={basePath} 
+            />
+          </div>
+        ))}
+        <div className="w-4 shrink-0 pointer-events-none" />
       </div>
     </div>
   </section>

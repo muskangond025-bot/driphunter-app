@@ -1,22 +1,43 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ArrowLeft, ChevronDown, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function CouponsPage() {
   const router = useRouter();
   
+  const [couponCode, setCouponCode] = useState("");
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  const triggerToast = (msg: string) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 3000);
+  };
+
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) return;
+    const code = couponCode.trim().toUpperCase();
+    if (code === "DRIP10" || code === "VIP15") {
+      localStorage.setItem("driphunter_applied_coupon", code);
+      triggerToast(`Coupon ${code} applied successfully!`);
+      setCouponCode("");
+    } else {
+      triggerToast("Invalid Coupon. Try DRIP10 or VIP15.");
+    }
+  };
+
   const coupons = [
-    { badge: "8d", image: "https://drip-hunter.vercel.app/images/urban-essentials/cargo_pants.png", type: "Special Discount", title: "Flat ₹1000 off", desc: "on All AC" },
-    { badge: "", image: "https://drip-hunter.vercel.app/images/urban-essentials/sling_bag.png", type: "Special Discount", title: "Flat ₹150 off", desc: "on Digitek Cleaning Kit camera" },
-    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-jordan.jpg", type: "Special Discount", title: "Flat ₹250 off", desc: "on Hiffin Camera LED Lights" },
-    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-nike.jpg", type: "Exclusive Brand discount", title: "Flat ₹1000 off", desc: "on All Washing Machine" },
-    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-adidas.jpg", type: "Special Discount", title: "Get 8% off", desc: "on Kreo Microphones camera" },
-    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-yeezy.jpg", type: "Special Discount", title: "Get 5% off", desc: "on Zeiss Terra Binoculars camera" },
-    { badge: "6d", image: "https://drip-hunter.vercel.app/images/urban-essentials/bifold_wallet.png", type: "Special Discount", title: "Flat ₹10000 off", desc: "on All AC" },
-    { badge: "", image: "https://img.icons8.com/ios-filled/50/a855f7/discount.png", type: "Special Discount", title: "Get 10% off upto ₹1200", desc: "on Seagate Storage" },
-    { badge: "", image: "https://img.icons8.com/ios/50/cccccc/image.png", type: "Special Discount", title: "Flat ₹2000 off", desc: "on Sony camera" },
+    { badge: "8d", image: "https://drip-hunter.vercel.app/images/urban-essentials/cargo_pants.png", type: "Special Discount", title: "Flat ₹1000 off", desc: "on All AC", productId: "1" },
+    { badge: "", image: "https://drip-hunter.vercel.app/images/urban-essentials/sling_bag.png", type: "Special Discount", title: "Flat ₹150 off", desc: "on Digitek Cleaning Kit camera", productId: "2" },
+    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-jordan.jpg", type: "Special Discount", title: "Flat ₹250 off", desc: "on Hiffin Camera LED Lights", productId: "3" },
+    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-nike.jpg", type: "Exclusive Brand discount", title: "Flat ₹1000 off", desc: "on All Washing Machine", productId: "4" },
+    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-adidas.jpg", type: "Special Discount", title: "Get 8% off", desc: "on Kreo Microphones camera", productId: "5" },
+    { badge: "", image: "https://drip-hunter.vercel.app/images/sneaker-yeezy.jpg", type: "Special Discount", title: "Get 5% off", desc: "on Zeiss Terra Binoculars camera", productId: "6" },
+    { badge: "6d", image: "https://drip-hunter.vercel.app/images/urban-essentials/bifold_wallet.png", type: "Special Discount", title: "Flat ₹10000 off", desc: "on All AC", productId: "7" },
+    { badge: "", image: "https://img.icons8.com/ios-filled/50/a855f7/discount.png", type: "Special Discount", title: "Get 10% off upto ₹1200", desc: "on Seagate Storage", productId: "8" },
+    { badge: "", image: "https://img.icons8.com/ios/50/cccccc/image.png", type: "Special Discount", title: "Flat ₹2000 off", desc: "on Sony camera", productId: "9" },
   ];
 
   return (
@@ -62,30 +83,67 @@ export default function CouponsPage() {
         </div>
       </div>
 
+      {/* Toast Notification */}
+      {toastMsg && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[100] bg-gray-800 text-white px-4 py-2 rounded-full font-mono text-xs font-bold shadow-2xl flex items-center gap-2 animate-in slide-in-from-top-2 w-max">
+          <span className="truncate">{toastMsg}</span>
+        </div>
+      )}
+
       {/* Input Box */}
       <div className="px-4 py-0 -mt-8 relative z-10 w-full mx-auto">
         <div className="bg-white rounded-xl border border-gray-200 flex items-center shadow-sm overflow-hidden h-[46px]">
           <input 
             type="text" 
-            placeholder="Enter coupon code" 
-            className="flex-1 px-4 py-2 text-[13px] outline-none bg-transparent placeholder-gray-400 text-gray-800" 
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value)}
+            placeholder="Enter coupon code (e.g. DRIP10)" 
+            className="flex-1 px-4 py-2 text-[13px] outline-none bg-transparent placeholder-gray-400 text-gray-800 uppercase" 
           />
-          <button className="text-[13px] font-semibold text-gray-700 px-4 h-full whitespace-nowrap bg-white hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={handleApplyCoupon}
+            className="text-[13px] font-semibold text-gray-700 px-4 h-full whitespace-nowrap bg-gray-50 hover:bg-gray-100 transition-colors border-l border-gray-200"
+          >
             Add coupon
           </button>
         </div>
       </div>
 
       {/* Heading & Filters */}
-      <div className="px-4 pt-6 pb-2">
+      <div className="px-4 pt-6 pb-2 relative">
         <h3 className="text-[14px] font-bold text-gray-800 mb-3">Save more with coupons</h3>
         <div className="flex gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-[11px] font-medium text-gray-600 bg-white hover:bg-gray-50">
-            Categories <ChevronDown className="w-3 h-3 text-gray-400" />
-          </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-[11px] font-medium text-gray-600 bg-white hover:bg-gray-50">
-            Brands <ChevronDown className="w-3 h-3 text-gray-400" />
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setActiveDropdown(activeDropdown === 'categories' ? null : 'categories')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-[11px] font-medium transition-colors ${activeDropdown === 'categories' ? 'border-[#8b5cf6] text-[#8b5cf6] bg-[#f3e8ff]' : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'}`}
+            >
+              Categories <ChevronDown className={`w-3 h-3 transition-transform ${activeDropdown === 'categories' ? 'rotate-180' : ''}`} />
+            </button>
+            {activeDropdown === 'categories' && (
+              <div className="absolute top-full left-0 mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20 text-[11px] font-medium text-gray-700">
+                <button className="w-full text-left px-3 py-1.5 hover:bg-gray-50" onClick={() => setActiveDropdown(null)}>All Categories</button>
+                <button className="w-full text-left px-3 py-1.5 hover:bg-gray-50" onClick={() => setActiveDropdown(null)}>Electronics</button>
+                <button className="w-full text-left px-3 py-1.5 hover:bg-gray-50" onClick={() => setActiveDropdown(null)}>Fashion</button>
+              </div>
+            )}
+          </div>
+          
+          <div className="relative">
+            <button 
+              onClick={() => setActiveDropdown(activeDropdown === 'brands' ? null : 'brands')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-[11px] font-medium transition-colors ${activeDropdown === 'brands' ? 'border-[#8b5cf6] text-[#8b5cf6] bg-[#f3e8ff]' : 'border-gray-200 text-gray-600 bg-white hover:bg-gray-50'}`}
+            >
+              Brands <ChevronDown className={`w-3 h-3 transition-transform ${activeDropdown === 'brands' ? 'rotate-180' : ''}`} />
+            </button>
+            {activeDropdown === 'brands' && (
+              <div className="absolute top-full left-0 mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20 text-[11px] font-medium text-gray-700">
+                <button className="w-full text-left px-3 py-1.5 hover:bg-gray-50" onClick={() => setActiveDropdown(null)}>All Brands</button>
+                <button className="w-full text-left px-3 py-1.5 hover:bg-gray-50" onClick={() => setActiveDropdown(null)}>Nike</button>
+                <button className="w-full text-left px-3 py-1.5 hover:bg-gray-50" onClick={() => setActiveDropdown(null)}>Sony</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -113,7 +171,10 @@ export default function CouponsPage() {
               <p className="text-[10px] text-gray-500 mb-0.5">{coupon.type}</p>
               <h4 className="text-[13px] font-bold text-gray-800 leading-tight">{coupon.title}</h4>
               <p className="text-[10px] text-gray-500 mt-1 line-clamp-1">{coupon.desc}</p>
-              <button className="text-[#3b82f6] text-[11px] font-semibold mt-auto text-left w-fit hover:underline">
+              <button 
+                onClick={() => router.push(`/product/${coupon.productId}`)}
+                className="text-[#3b82f6] text-[11px] font-semibold mt-auto text-left w-fit hover:underline"
+              >
                 View products ›
               </button>
             </div>

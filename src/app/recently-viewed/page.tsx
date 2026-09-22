@@ -7,7 +7,7 @@ import ProductCard from "@/components/product/ProductCard";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-const recentlyViewedHistory = [
+export const recentlyViewedHistory = [
   { 
     id: "201", 
     name: "Puma Scuderia Ferrari Heritage Zip Sweatshirt", 

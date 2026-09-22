@@ -2,9 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight, Heart, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import CuratedLookCard, { CuratedLook } from "@/components/product/CuratedLookCard";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import ProductCard from "@/components/product/ProductCard";
 
 const curatedLooks: CuratedLook[] = [
   {
@@ -51,12 +53,12 @@ export default function CuratedForYou({ basePath = "" }: { basePath?: string }) 
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="bg-[#faf8f5] dark:bg-[#0a0a0c] text-zinc-900 dark:text-zinc-100 py-10 relative overflow-hidden transition-colors duration-300">
+    <section ref={ref} className="bg-[#faf8f5] dark:bg-[#0a0a0c] text-zinc-900 dark:text-zinc-100 py-10 relative overflow-hidden transition-colors duration-300">
       
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-4">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 relative z-10">
         
-        {/* Editorial Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Desktop Editorial Header (Hidden on Mobile) */}
+        <div className="hidden md:flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 border border-stone-200 dark:border-zinc-800 rounded-full flex items-center justify-center text-zinc-400 bg-white dark:bg-zinc-900 shadow-sm">
               <Heart className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
@@ -79,12 +81,63 @@ export default function CuratedForYou({ basePath = "" }: { basePath?: string }) 
           </Link>
         </div>
 
-        {/* Compact Premium Catalogue Container */}
-        <div ref={ref} className="grid grid-cols-1 gap-12 lg:gap-16">
+        {/* Mobile Editorial Header (Hidden on Desktop) */}
+        <div className="md:hidden border-b border-zinc-200/70 dark:border-zinc-800/80 pb-5 mb-4">
+          <SectionHeading
+            variant="playfair"
+            className="text-zinc-950 dark:text-zinc-50"
+            title={<>CURATED <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">FOR YOU</span></>}
+            eyebrow={
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#6F4E37] dark:text-[#E6C280]" />
+                <span className="text-[10px] font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
+                  Picked for your style
+                </span>
+              </div>
+            }
+            action={
+              <Link
+                href={`${basePath}/explore`}
+                className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors mt-2"
+              >
+                <span>VIEW ALL</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            }
+          />
+        </div>
+
+        {/* Desktop Container */}
+        <div className="hidden md:grid grid-cols-1 gap-12 lg:gap-16">
           {curatedLooks.map((look) => (
             <CuratedLookCard key={look.id} look={look} isVisible={isVisible} />
           ))}
         </div>
+      </div>
+
+      {/* Mobile Horizontal Carousel Container */}
+      <div 
+        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
+        {curatedLooks[0].items.map((item, i) => (
+          <div 
+            key={item.id} 
+            className="w-[155px] sm:w-[170px] shrink-0 flex flex-col justify-between snap-start"
+          >
+            <ProductCard 
+              id={item.id}
+              name={item.name}
+              brand="DripHunter"
+              price={`₹${item.price}`}
+              image={item.image}
+              inStock={true}
+              basePath={basePath} 
+            />
+          </div>
+        ))}
+        <div className="w-4 shrink-0 pointer-events-none" />
       </div>
     </section>
   );

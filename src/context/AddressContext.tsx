@@ -21,7 +21,7 @@ export interface Address {
 interface AddressContextType {
   addresses: Address[];
   activeAddressId: number | null;
-  addAddress: (address: Omit<Address, "id">) => void;
+  addAddress: (address: Omit<Address, "id">) => number;
   updateAddress: (id: number, address: Partial<Address>) => void;
   deleteAddress: (id: number) => void;
   setActiveAddress: (id: number) => void;
@@ -91,12 +91,11 @@ export const AddressProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [addresses, activeAddressId]);
 
-  const addAddress = (address: Omit<Address, "id">) => {
+  const addAddress = (address: Omit<Address, "id">): number => {
     const newAddress = { ...address, id: Date.now() };
     setAddresses((prev) => [...prev, newAddress]);
-    if (addresses.length === 0) {
-      setActiveAddressId(newAddress.id);
-    }
+    setActiveAddressId(newAddress.id);
+    return newAddress.id;
   };
 
   const updateAddress = (id: number, updatedAddress: Partial<Address>) => {

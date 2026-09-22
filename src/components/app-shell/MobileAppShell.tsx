@@ -18,7 +18,7 @@ export default function MobileAppShell({ children }: MobileAppShellProps) {
         Using flex-1 so it takes remaining space if needed.
         Overflow handles vertical scrolling on the content, not the whole page.
       */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden relative flex flex-col">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden relative flex flex-col pb-20">
         {children}
       </main>
 

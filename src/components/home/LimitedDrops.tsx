@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowRight, Flame, Sparkles, Clock, MapPin, Search } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import ProductCard from "@/components/product/ProductCard";
+import { LIMITED_DROPS, MOCK_PRODUCTS } from "@/data/mockData";
 
 const dealCards = [
   {
@@ -84,54 +86,93 @@ export default function LimitedDrops({ basePath = "" }: { basePath?: string }) {
   }, []);
 
   return (
-    <section className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white py-10 border-y border-zinc-100 dark:border-zinc-900 select-none overflow-hidden relative">
+    <section ref={ref} className="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white py-10 border-y border-zinc-100 dark:border-zinc-900 select-none overflow-hidden relative">
       
       {/* Premium Editorial Header */}
-      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 mb-8">
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 mb-6 md:mb-8">
         <div className="border-b border-zinc-100 dark:border-zinc-800/80 pb-5">
-          <SectionHeading
-            variant="playfair-sm"
-            className="text-zinc-900 dark:text-zinc-100"
-            title={<>Deals <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">of the Day</span></>}
-            eyebrow={
-              <div className="flex items-center gap-2 mb-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span className="text-[10px] md:text-xs font-semibold tracking-[0.3em] text-[#6F4E37] dark:text-[#E6C280] uppercase block font-mono">
-                  Today's Specials
-                </span>
-              </div>
-            }
-            action={
-              <div className="flex flex-col md:items-end gap-3 md:max-w-md w-full md:w-auto">
-                {/* Live countdown */}
-                <div className="flex items-center gap-2.5 text-[10px] md:text-xs font-mono text-[#6F4E37] dark:text-[#E6C280] bg-[#6F4E37]/5 dark:bg-[#E6C280]/5 border border-[#6F4E37]/20 dark:border-[#E6C280]/20 pl-3.5 pr-1.5 py-1 rounded-full select-none self-start md:self-end shadow-[0_2px_10px_rgba(111,78,55,0.06)] dark:shadow-[0_2px_10px_rgba(230,194,128,0.04)] hover:shadow-[0_4px_15px_rgba(111,78,55,0.12)] dark:hover:shadow-[0_4px_15px_rgba(230,194,128,0.08)] transition-all duration-300 backdrop-blur-[2px]">
-                  <Clock className="w-3.5 h-3.5 text-[#6F4E37] dark:text-[#E6C280] animate-pulse" />
-                  <span className="uppercase tracking-wider font-semibold">Ends In</span>
-                  <span className="bg-white/95 dark:bg-zinc-900 border border-[#6F4E37]/15 dark:border-[#E6C280]/15 px-2.5 py-1 rounded-full text-zinc-950 dark:text-zinc-50 font-bold font-mono shadow-[0_1px_3px_rgba(0,0,0,0.05)] select-all tracking-wider text-[11px] md:text-xs">
-                    {timeLeft}
+          {/* Desktop Header */}
+          <div className="hidden md:block">
+            <SectionHeading
+              variant="playfair-sm"
+              className="text-zinc-900 dark:text-zinc-100"
+              title={<>Deals <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">of the Day</span></>}
+              eyebrow={
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-xs font-semibold tracking-[0.3em] text-[#6F4E37] dark:text-[#E6C280] uppercase block font-mono">
+                    Today's Specials
                   </span>
                 </div>
-                <p className="text-xs md:text-sm text-zinc-400 font-sans font-light leading-relaxed md:text-right">
-                  Exclusive daily promotions on selected premium collections. Deals expire at midnight.
-                </p>
-              </div>
-            }
-          />
+              }
+              action={
+                <div className="flex flex-col items-end gap-3 max-w-md w-auto">
+                  {/* Live countdown */}
+                  <div className="flex items-center gap-2.5 text-xs font-mono text-[#6F4E37] dark:text-[#E6C280] bg-[#6F4E37]/5 dark:bg-[#E6C280]/5 border border-[#6F4E37]/20 dark:border-[#E6C280]/20 pl-3.5 pr-1.5 py-1 rounded-full select-none self-end shadow-[0_2px_10px_rgba(111,78,55,0.06)] dark:shadow-[0_2px_10px_rgba(230,194,128,0.04)] hover:shadow-[0_4px_15px_rgba(111,78,55,0.12)] dark:hover:shadow-[0_4px_15px_rgba(230,194,128,0.08)] transition-all duration-300 backdrop-blur-[2px]">
+                    <Clock className="w-3.5 h-3.5 text-[#6F4E37] dark:text-[#E6C280] animate-pulse" />
+                    <span className="uppercase tracking-wider font-semibold">Ends In</span>
+                    <span className="bg-white/95 dark:bg-zinc-900 border border-[#6F4E37]/15 dark:border-[#E6C280]/15 px-2.5 py-1 rounded-full text-zinc-950 dark:text-zinc-50 font-bold font-mono shadow-[0_1px_3px_rgba(0,0,0,0.05)] select-all tracking-wider text-xs">
+                      {timeLeft}
+                    </span>
+                  </div>
+                  <p className="text-sm text-zinc-400 font-sans font-light leading-relaxed text-right">
+                    Exclusive daily promotions on selected premium collections. Deals expire at midnight.
+                  </p>
+                </div>
+              }
+            />
+          </div>
+
+          {/* Mobile Header */}
+          <div className="md:hidden">
+            <SectionHeading
+              variant="playfair"
+              className="text-zinc-950 dark:text-zinc-50"
+              title={<>LIMITED <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">DROPS</span></>}
+              eyebrow={
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#6F4E37] dark:bg-[#E6C280] animate-pulse" />
+                  <span className="text-[10px] font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
+                    Exclusive pieces. Limited availability.
+                  </span>
+                </div>
+              }
+              action={
+                <div className="flex flex-col mt-2 gap-2">
+                  <div className="flex items-center gap-2 text-[10px] font-mono text-[#6F4E37] dark:text-[#E6C280] bg-[#6F4E37]/5 dark:bg-[#E6C280]/5 border border-[#6F4E37]/20 dark:border-[#E6C280]/20 pl-2.5 pr-1 py-0.5 rounded-full self-start backdrop-blur-[2px]">
+                    <Clock className="w-3 h-3 animate-pulse" />
+                    <span className="uppercase tracking-wider font-semibold">Ends In</span>
+                    <span className="bg-white/95 dark:bg-zinc-900 border border-[#6F4E37]/15 dark:border-[#E6C280]/15 px-1.5 py-0.5 rounded-full text-zinc-950 dark:text-zinc-50 font-bold shadow-[0_1px_3px_rgba(0,0,0,0.05)] tracking-wider">
+                      {timeLeft}
+                    </span>
+                  </div>
+                  <Link
+                    href={`${basePath}/shop`}
+                    className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                  >
+                    <span>VIEW ALL</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              }
+            />
+          </div>
         </div>
       </div>
 
-      {/* 3-Column Premium Deals Grid */}
+      {/* 3-Column Premium Deals Grid (Desktop Only) */}
       <div
-        ref={ref}
-        className={`w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 transition-all duration-1000 ease-out ${
+        className={`hidden md:block w-full transition-all duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div 
+          className="grid md:grid-cols-3 gap-4 md:gap-8 px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 scrollbar-none pb-6 md:pb-0" 
+        >
           {dealCards.map((card) => (
             <div
               key={card.id}
-              className="border border-zinc-800 rounded-3xl overflow-hidden flex flex-col justify-between shadow-md hover:shadow-[0_20px_50px_rgba(111,78,55,0.15)] transition-all duration-500 hover:-translate-y-1.5 group p-6 min-h-[380px] relative bg-zinc-950"
+              className="w-auto shrink-0 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col justify-between shadow-md hover:shadow-[0_20px_50px_rgba(111,78,55,0.15)] transition-all duration-500 hover:-translate-y-1.5 group p-6 min-h-[380px] relative bg-zinc-950"
             >
               {/* Background Image */}
               <div className="absolute inset-0 z-0 overflow-hidden">
@@ -171,7 +212,7 @@ export default function LimitedDrops({ basePath = "" }: { basePath?: string }) {
                 </span>
                 
                 <Link
-                  href={`${basePath}${card.href}`}
+                  href={basePath === "/mobile" ? `/mobile${card.href}` : `${basePath}${card.href}`}
                   className="inline-flex items-center gap-1.5 bg-white hover:bg-[#6F4E37] text-zinc-950 hover:text-white text-[9px] font-bold uppercase tracking-widest py-2 px-4 rounded-xl transition-all duration-300 shadow-md active:scale-95 border-none font-sans"
                 >
                   {card.btnLabel}
@@ -181,6 +222,36 @@ export default function LimitedDrops({ basePath = "" }: { basePath?: string }) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Horizontal Product Carousel (Mobile Only) */}
+      <div 
+        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
+        {[...LIMITED_DROPS, ...MOCK_PRODUCTS.filter(p => p.isLimited)].slice(0, 6).map((p, i) => (
+          <div 
+            key={p.id} 
+            className="w-[155px] sm:w-[170px] shrink-0 flex flex-col justify-between snap-start"
+          >
+            <ProductCard 
+              id={p.id}
+              name={p.title}
+              brand={p.brand}
+              price={`₹${p.price}`}
+              originalPrice={p.originalPrice ? `₹${p.originalPrice}` : undefined}
+              image={p.image}
+              hoverImage={p.hoverImage}
+              inStock={p.inStock !== false}
+              badge={p.isLimited ? "Limited Drop" : undefined}
+              rating={undefined} 
+              basePath={basePath} 
+            />
+          </div>
+        ))}
+        {/* Spacer to prevent clipping */}
+        <div className="w-4 shrink-0 pointer-events-none" />
       </div>
     </section>
   );

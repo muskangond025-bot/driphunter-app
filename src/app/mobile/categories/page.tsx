@@ -1,141 +1,151 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Search, Sparkles } from "lucide-react";
 import AppHeader from "@/components/app-shell/AppHeader";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
-import ProductCard from "@/components/product/ProductCard";
-import { CATEGORY_TABS, MOCK_PRODUCTS, LIMITED_DROPS } from "@/data/mockData";
-import { filterProducts, sortProducts, FilterState } from "@/lib/filterLogic";
-import FilterSortBottomSheet from "@/components/mobile/FilterSortBottomSheet";
-import { Compass } from "lucide-react";
 
-// Combine products just like shop/page.tsx
-const ALL_PRODUCTS = [
-  ...MOCK_PRODUCTS,
-  ...LIMITED_DROPS,
-  ...MOCK_PRODUCTS.map((p) => ({ ...p, id: `${p.id}-d1` })),
-  ...LIMITED_DROPS.map((p) => ({ ...p, id: `${p.id}-d1` })),
-  ...MOCK_PRODUCTS.map((p) => ({ ...p, id: `${p.id}-d2` })),
-  ...LIMITED_DROPS.map((p) => ({ ...p, id: `${p.id}-d2` }))
+const PREMIUM_CATEGORIES = [
+  {
+    id: "sneakers",
+    label: "SNEAKERS",
+    tagline: "Holy grails & daily beaters.",
+    image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80",
+    items: [
+      { label: "Air Jordan", href: "/mobile/brands/Jordan" },
+      { label: "Nike", href: "/mobile/brands/Nike" },
+      { label: "Adidas", href: "/mobile/brands/Adidas" },
+      { label: "Yeezy", href: "/mobile/brands/Yeezy" },
+      { label: "Samba", href: "/mobile/brands/Samba" },
+    ]
+  },
+  {
+    id: "apparel",
+    label: "APPAREL",
+    tagline: "Elevated silhouettes.",
+    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80",
+    items: [
+      { label: "T-Shirts", href: "/mobile/brands/T-Shirts" },
+      { label: "Hoodies", href: "/mobile/brands/Hoodies" },
+      { label: "Jackets", href: "/mobile/brands/Jackets" },
+      { label: "Bottoms", href: "/mobile/brands/Bottoms" },
+    ]
+  },
+  {
+    id: "accessories",
+    label: "ACCESSORIES",
+    tagline: "The final touch.",
+    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80",
+    items: [
+      { label: "Sling Bags", href: "/mobile/brands/Bags" },
+      { label: "Wallets", href: "/mobile/brands/Wallets" },
+      { label: "Headwear", href: "/mobile/brands/Headwear" },
+      { label: "Eyewear", href: "/mobile/brands/Eyewear" },
+    ]
+  }
 ];
 
 export default function MobileCategoriesPage() {
-  const [activeCategory, setActiveCategory] = useState("all");
-  
-  const [filters, setFilters] = useState<FilterState>({
-    inStockOnly: false,
-    selectedPriceRanges: [],
-    minPrice: 0,
-    maxPrice: 15000,
-    selectedBrands: [],
-    selectedCategories: [],
-    selectedSubCategories: [],
-    selectedTypes: [],
-    selectedSizes: [],
-    selectedGenders: [],
-    selectedColours: [],
-    selectedMaterials: [],
-  });
-  
-  const [sortBy, setSortBy] = useState("featured");
-
-  const filteredProducts = useMemo(() => {
-    // 1. Apply tab category filter
-    let products = ALL_PRODUCTS;
-    if (activeCategory !== "all") {
-      if (activeCategory === "limited-drops") {
-        products = products.filter(p => p.isLimited);
-      } else {
-        products = products.filter(p => p.category.toLowerCase() === activeCategory);
-      }
-    }
-
-    // 2. Apply bottom sheet filters
-    const finalFiltered = filterProducts(products, filters);
-
-    // 3. Sort
-    return sortProducts(finalFiltered, sortBy);
-  }, [activeCategory, filters, sortBy]);
-
-  const handleApplyFilters = (newFilters: FilterState, newSortBy: string) => {
-    setFilters(newFilters);
-    setSortBy(newSortBy);
-  };
+  const [activeTab, setActiveTab] = useState(PREMIUM_CATEGORIES[0].id);
 
   return (
     <AppPageLayout hasBottomNav={true}>
-      <AppHeader title="Categories" rightAction={<Compass className="w-5 h-5 text-zinc-900" />} />
-      <div className="flex flex-col min-h-screen bg-zinc-50 pt-2 pb-[130px]">
+      <AppHeader title="Directory" variant="contextual" showActions={false} />
+      
+      <div className="flex flex-col h-[calc(100vh-120px)] bg-[#FAF8F5] dark:bg-[#0C0B0A] overflow-hidden">
         
-        {/* Horizontal Category Tabs */}
-        <div className="sticky top-[56px] z-30 bg-zinc-50/95 backdrop-blur-md border-b border-zinc-200">
-          <div className="flex overflow-x-auto scrollbar-none px-4 py-3 gap-3">
-            {CATEGORY_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveCategory(tab.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
-                  activeCategory === tab.id
-                    ? "bg-[#6F4E37] text-white shadow-md shadow-[#6F4E37]/20"
-                    : "bg-white text-zinc-600 border border-zinc-200"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Product Grid */}
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest">
-              {filteredProducts.length} Results
+        {/* Search Bar & Header */}
+        <div className="px-4 py-4 shrink-0">
+          <Link href="/mobile/search" className="flex items-center w-full bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-2xl px-4 py-3.5 text-zinc-500 dark:text-zinc-400 gap-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] active:scale-[0.98] transition-transform mb-4">
+            <Search className="w-5 h-5 text-[#6F4E37] dark:text-[#E6C280]" />
+            <span className="text-[13px] font-sans">Search the archive...</span>
+          </Link>
+          
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="w-3.5 h-3.5 text-[#6F4E37] dark:text-[#E6C280]" />
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#6F4E37] dark:text-[#E6C280]">
+              Curated Index
             </span>
           </div>
+          <h1 className="text-4xl font-playfair font-black text-zinc-900 dark:text-white uppercase tracking-tighter">
+            Explore
+          </h1>
+        </div>
 
-          {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3">
-              {filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    id={product.id}
-                    name={product.title}
-                    brand={product.brand}
-                    price={`₹${product.price}`}
-                    originalPrice={product.originalPrice ? `₹${product.originalPrice}` : undefined}
-                    image={product.image}
-                    hoverImage={product.hoverImage}
-                    rating={product.rating}
-                    inStock={product.inStock !== false}
-                    basePath="/mobile"
+        {/* Dynamic Flex-Grow Accordion */}
+        <div className="flex-1 flex flex-col gap-2 px-4 pb-4 overflow-hidden">
+          {PREMIUM_CATEGORIES.map((cat, idx) => {
+            const isActive = activeTab === cat.id;
+            
+            return (
+              <div 
+                key={cat.id} 
+                onClick={() => setActiveTab(cat.id)}
+                className={`relative w-full rounded-[32px] overflow-hidden cursor-pointer transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] shadow-lg ${
+                  isActive ? "flex-[5]" : "flex-[1] active:scale-[0.98]"
+                }`}
+              >
+                {/* Image Background */}
+                <div className="absolute inset-0 w-full h-full">
+                  <img 
+                    src={cat.image} 
+                    alt={cat.label} 
+                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-[2000ms] ease-out ${
+                      isActive ? "scale-105" : "scale-100"
+                    }`}
                   />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-sm font-bold text-zinc-900 uppercase tracking-widest mb-2">
-                No items found
-              </p>
-              <p className="text-xs text-zinc-500">
-                Try adjusting your filters or category.
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+                  {/* Dynamic Dark Gradient based on active state */}
+                  <div className={`absolute inset-0 transition-colors duration-700 ${
+                    isActive 
+                      ? "bg-gradient-to-t from-black/95 via-black/40 to-transparent" 
+                      : "bg-black/60 hover:bg-black/50"
+                  }`} />
+                </div>
+                
+                {/* Collapsed State Title (Centered) */}
+                <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+                  isActive ? "opacity-0 pointer-events-none" : "opacity-100 delay-200"
+                }`}>
+                  <h2 className="text-2xl font-black text-white/90 uppercase tracking-widest">
+                    {cat.label}
+                  </h2>
+                </div>
+                
+                {/* Expanded Content (Bottom Aligned) */}
+                <div className={`absolute inset-0 p-6 flex flex-col justify-end transition-all duration-700 ${
+                  isActive ? "opacity-100 translate-y-0 delay-200" : "opacity-0 translate-y-8 pointer-events-none"
+                }`}>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[#E6C280] mb-1">
+                    0{idx + 1}
+                  </span>
+                  <h2 className="text-4xl sm:text-5xl font-black text-white uppercase tracking-tighter leading-none mb-1">
+                    {cat.label}
+                  </h2>
+                  <p className="text-zinc-300 font-serif italic text-sm mb-6">
+                    {cat.tagline}
+                  </p>
 
-      {/* Fixed Filter & Sort Bar (Above BottomNav) */}
-      <div className="fixed bottom-[64px] left-1/2 -translate-x-1/2 w-full max-w-md z-40 pb-safe">
-        <div className="flex w-full">
-          <FilterSortBottomSheet 
-            currentFilters={filters}
-            currentSortBy={sortBy}
-            onApply={handleApplyFilters}
-          />
+                  {/* Glassmorphic Grid for Subcategories */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {cat.items.map((sub, i) => (
+                      <Link 
+                        key={i} 
+                        href={sub.href}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center justify-center py-3.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-2xl transition-colors active:bg-white/30"
+                      >
+                        <span className="text-[11px] font-bold text-white tracking-wider uppercase">{sub.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
+
       </div>
-      
     </AppPageLayout>
   );
 }

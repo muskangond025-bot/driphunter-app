@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PageContainer from "@/components/layout/PageContainer";
-import { CheckCircle, ArrowRight, ShieldCheck, Tag } from "lucide-react";
+import { CheckCircle, ArrowRight, ShieldCheck, Tag, ArrowLeft, Search, ShoppingBag } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SearchOverlay from "@/components/layout/SearchOverlay";
@@ -16,7 +16,12 @@ import { Button } from "@/components/ui/button";
 export default function CheckoutPage() {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart, isLoaded } = useCart();
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Form fields
   const [email, setEmail] = useState("");
@@ -147,10 +152,32 @@ export default function CheckoutPage() {
     }
   };
 
+  if (!mounted || !isLoaded) return null;
+
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 text-foreground">
-      {/* Navigation Header */}
-      <Navbar onSearchClick={() => setIsSearchOpen(true)} />
+      {/* Minimal Checkout Header */}
+      <header className="sticky top-0 z-50 flex items-center justify-between px-4 sm:px-6 py-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+        <button onClick={() => router.back()} className="p-2 -ml-2 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-full transition-colors">
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        
+        <Link href="/" className="font-serif italic font-black text-xl tracking-tighter text-zinc-900 dark:text-white absolute left-1/2 -translate-x-1/2">
+          DripHunter
+        </Link>
+        
+        <div className="flex gap-2 items-center">
+          <button onClick={() => setIsSearchOpen(true)} className="p-2 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-full transition-colors">
+            <Search className="w-5 h-5" />
+          </button>
+          <Link href="/mobile/cart" className="p-2 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-full transition-colors relative">
+            <ShoppingBag className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-zinc-950"></span>
+            )}
+          </Link>
+        </div>
+      </header>
 
       {/* Main Content */}
       <main className="flex-grow bg-zinc-50 dark:bg-zinc-950 py-12 sm:py-16 select-none">
@@ -689,9 +716,6 @@ export default function CheckoutPage() {
 
         </PageContainer>
       </main>
-
-      {/* Footer */}
-      <Footer />
 
       {/* Global Search Overlay */}
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

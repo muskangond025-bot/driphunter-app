@@ -16,7 +16,7 @@ import CuratedLookCard, { CuratedLook } from "@/components/product/CuratedLookCa
 
 
 
-const ARCHIVE_LOOKS: CuratedLook[] = [
+export const ARCHIVE_LOOKS: CuratedLook[] = [
   {
     id: "look1",
     category: "Quiet Luxury",

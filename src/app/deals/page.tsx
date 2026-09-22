@@ -14,42 +14,42 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
 
 // Mock Data for Sale Grids
-const SNEAKERS_SALE = [
+export const SNEAKERS_SALE = [
   { id: "s1", brand: "Neo-Step", title: "Midnight Eclipse Low", price: 8999, originalPrice: 11999, image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=400&q=80" },
   { id: "s2", brand: "Air Retro", title: "Crimson High 1s", price: 12999, originalPrice: 16999, image: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=400&q=80" },
   { id: "s3", brand: "Urban Runner", title: "Cloud-knit Stealth", price: 5999, originalPrice: 7999, image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=400&q=80" },
   { id: "s4", brand: "Y-Project", title: "Sculpted Runners", price: 14999, originalPrice: 19999, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80" },
 ];
 
-const APPAREL_SALE = [
+export const APPAREL_SALE = [
   { id: "a1", brand: "Guerilla Culture", title: "400GSM Stealth Hoodie", price: 3999, originalPrice: 5499, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=400&q=80" },
   { id: "a2", brand: "Urban Combat", title: "Parachute Combat Pants", price: 2999, originalPrice: 4299, image: "https://images.unsplash.com/photo-1517462964-21fdcec3f25b?auto=format&fit=crop&w=400&q=80" },
   { id: "a3", brand: "Outkast Lab", title: "Oversized Cyber-Drip Tee", price: 1799, originalPrice: 2499, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400&q=80" },
   { id: "a4", brand: "Tokyo Techwear", title: "Utility Cargo Vest", price: 3499, originalPrice: 4999, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=400&q=80" },
 ];
 
-const ACCESSORIES_SALE = [
+export const ACCESSORIES_SALE = [
   { id: "ac1", brand: "DripHunter Originals", title: "Shibuya Blackout Cap", price: 1299, originalPrice: 1899, image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=400&q=80" },
   { id: "ac2", brand: "Neo-Step", title: "Reflective Crossbody", price: 1899, originalPrice: 2699, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80" },
   { id: "ac3", brand: "Guerilla Culture", title: "Steel Chain Necklace", price: 899, originalPrice: 1499, image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=400&q=80" },
   { id: "ac4", brand: "Urban Combat", title: "Tactical Tech Gloves", price: 1499, originalPrice: 2199, image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=400&q=80" },
 ];
 
-const BIGGEST_DISCOUNTS = [
+export const BIGGEST_DISCOUNTS = [
   { id: "bd1", brand: "Urban Runner", title: "Cloud-knit Stealth", price: 2999, originalPrice: 7999, image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=400&q=80" },
   { id: "bd2", brand: "Air Retro", title: "Crimson High 1s", price: 5999, originalPrice: 16999, image: "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=400&q=80" },
   { id: "bd3", brand: "Tokyo Techwear", title: "Utility Cargo Vest", price: 1499, originalPrice: 4999, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=400&q=80" },
   { id: "bd4", brand: "Guerilla Culture", title: "400GSM Stealth Hoodie", price: 1499, originalPrice: 5499, image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=400&q=80" },
 ];
 
-const LAST_CHANCE = [
+export const LAST_CHANCE = [
   { id: "lc1", brand: "Neo-Step", title: "Midnight Eclipse Low", price: 8999, originalPrice: 11999, image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=400&q=80", stock: 1 },
   { id: "lc2", brand: "DripHunter Originals", title: "Shibuya Blackout Cap", price: 1299, originalPrice: 1899, image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=400&q=80", stock: 3 },
   { id: "lc3", brand: "Outkast Lab", title: "Oversized Cyber-Drip Tee", price: 1799, originalPrice: 2499, image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400&q=80", stock: 2 },
   { id: "lc4", brand: "Y-Project", title: "Sculpted Runners", price: 14999, originalPrice: 19999, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80", stock: 1 },
 ];
 
-const SALE_CATEGORIES = [
+export const SALE_CATEGORIES = [
   { title: "Sneakers on Sale", data: SNEAKERS_SALE, link: "/shop?category=sneakers&sale=true" },
   { title: "Apparel on Sale", data: APPAREL_SALE, link: "/shop?category=apparel&sale=true" },
   { title: "Accessories on Sale", data: ACCESSORIES_SALE, link: "/shop?category=accessories&sale=true" }

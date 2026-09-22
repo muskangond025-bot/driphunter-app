@@ -9,6 +9,7 @@ export interface MobileFilterSortProps {
   currentFilters: FilterState;
   currentSortBy: string;
   onApply: (filters: FilterState, sortBy: string) => void;
+  trigger?: React.ReactNode;
 }
 
 const SORT_OPTIONS = [
@@ -20,8 +21,9 @@ const SORT_OPTIONS = [
 
 const BRANDS = ["Guerilla Culture", "Urban Combat", "Nike", "Outkast Lab", "DripHunter Originals", "Tokyo Techwear", "Element Streetwear", "Zara"];
 const SIZES = ["XS", "S", "M", "L", "XL", "Free Size"];
+const GENDERS = ["Men", "Women", "Unisex"];
 
-export default function FilterSortBottomSheet({ currentFilters, currentSortBy, onApply }: MobileFilterSortProps) {
+export default function FilterSortBottomSheet({ currentFilters, currentSortBy, onApply, trigger }: MobileFilterSortProps) {
   const [isOpen, setIsOpen] = useState(false);
   
   // Local temporary state
@@ -79,24 +81,37 @@ export default function FilterSortBottomSheet({ currentFilters, currentSortBy, o
     }));
   };
 
+  const toggleGender = (gender: string) => {
+    const g = gender.toLowerCase();
+    setLocalFilters((prev) => ({
+      ...prev,
+      selectedGenders: prev.selectedGenders.includes(g)
+        ? prev.selectedGenders.filter((v) => v !== g)
+        : [...prev.selectedGenders, g]
+    }));
+  };
+
   const activeFilterCount = 
     (currentFilters.inStockOnly ? 1 : 0) +
     currentFilters.selectedBrands.length +
     currentFilters.selectedSizes.length +
+    currentFilters.selectedGenders.length +
     (currentFilters.minPrice > 0 || currentFilters.maxPrice < 15000 ? 1 : 0);
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border-t border-zinc-200 text-xs font-bold uppercase tracking-wider text-zinc-900 active:bg-zinc-50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-40 relative h-[56px]">
-          <SlidersHorizontal className="w-4 h-4" />
-          Filter & Sort
-          {activeFilterCount > 0 && (
-            <span className="bg-[#6F4E37] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center leading-none">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
+        {trigger ? trigger : (
+          <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border-t border-zinc-200 text-xs font-bold uppercase tracking-wider text-zinc-900 active:bg-zinc-50 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-40 relative h-[56px]">
+            <SlidersHorizontal className="w-4 h-4" />
+            Filter & Sort
+            {activeFilterCount > 0 && (
+              <span className="bg-[#6F4E37] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center leading-none">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        )}
       </DrawerTrigger>
 
       <DrawerContent className="h-[85vh] flex flex-col bg-white">
@@ -174,6 +189,31 @@ export default function FilterSortBottomSheet({ currentFilters, currentSortBy, o
                     }`}
                   >
                     {sz}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Genders */}
+          <section className="mb-8">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-zinc-500 mb-3">
+              Gender
+            </h3>
+            <div className="grid grid-cols-3 gap-2">
+              {GENDERS.map((g) => {
+                const isActive = localFilters.selectedGenders.includes(g.toLowerCase());
+                return (
+                  <button
+                    key={g}
+                    onClick={() => toggleGender(g)}
+                    className={`p-3 rounded-xl border text-xs font-bold transition-all ${
+                      isActive
+                        ? "border-[#6F4E37] bg-[#6F4E37] text-white shadow-md"
+                        : "border-zinc-200 bg-white text-zinc-700"
+                    }`}
+                  >
+                    {g}
                   </button>
                 );
               })}

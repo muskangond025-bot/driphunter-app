@@ -17,9 +17,10 @@ import {
   ShieldCheck,
   MapPin,
   Store,
-  Headset,
   IndianRupee,
   Share2,
+  X,
+  Search,
   ChevronLeft
 } from "lucide-react";
 
@@ -28,6 +29,8 @@ import { useAddress } from "@/context/AddressContext";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
 import AppHeader from "@/components/app-shell/AppHeader";
 import ProductCard from "@/components/product/ProductCard";
+import DeliveryLocationSheet from "@/components/mobile/DeliveryLocationSheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
 import {
   productDetail,
@@ -44,7 +47,8 @@ export default function MobileProductDetailPage() {
   const router = useRouter();
   
   // Contexts
-  const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const { cart, addToCart, toggleWishlist, isInWishlist } = useCart();
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const { addresses, activeAddressId } = useAddress();
 
   // Derived state
@@ -77,6 +81,10 @@ export default function MobileProductDetailPage() {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const activeStreamRef = useRef<MediaStream | null>(null);
+
+  // Cart Sheet State
+  const [isSizeSheetOpen, setIsSizeSheetOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Update active image index based on scroll position
   useEffect(() => {
@@ -191,6 +199,11 @@ export default function MobileProductDetailPage() {
   };
 
   const handleAddToCart = () => {
+    setIsSizeSheetOpen(true);
+  };
+
+  const confirmAddToCart = (size: string) => {
+    setSelectedSize(size);
     addToCart(
       {
         id: productDetail.id,
@@ -198,16 +211,19 @@ export default function MobileProductDetailPage() {
         price: productDetail.price,
         image: currentColor.images[0],
         brand: productDetail.brand,
-        size: selectedSize,
+        size: size,
         color: currentColor.name,
       },
       quantity
     );
+    setIsSizeSheetOpen(false);
+    setToastMsg("Saved in Cart");
+    setTimeout(() => setToastMsg(null), 3000);
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
-    router.push("/checkout"); // Match desktop logic behavior
+    confirmAddToCart(selectedSize);
+    setTimeout(() => router.push("/checkout"), 50); // Match desktop logic behavior
   };
 
   const wishlistAction = (
@@ -219,18 +235,19 @@ export default function MobileProductDetailPage() {
         image: currentColor.images[0],
         brand: productDetail.brand
       })}
-      className="p-2 transition-transform active:scale-95"
+      className="p-2.5 transition-transform active:scale-95 flex items-center justify-center"
       aria-label="Add to wishlist"
     >
       <Heart
-        className={`w-5 h-5 transition-colors ${isLiked ? "text-rose-500 fill-rose-500" : "text-zinc-600 dark:text-zinc-300"}`}
+        fill={isLiked ? "currentColor" : "none"}
+        className={`w-5 h-5 transition-colors ${isLiked ? "text-rose-500" : "text-zinc-700 dark:text-zinc-200"}`}
       />
     </button>
   );
 
   const shareAction = (
-    <button onClick={handleShare} className="p-2 mr-1 transition-transform active:scale-95">
-      <Share2 className="w-5 h-5 text-zinc-600 dark:text-zinc-300" />
+    <button onClick={handleShare} className="p-2.5 transition-transform active:scale-95 flex items-center justify-center">
+      <Share2 className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
     </button>
   );
 
@@ -238,9 +255,23 @@ export default function MobileProductDetailPage() {
     <AppPageLayout hasBottomNav={false}>
       <AppHeader 
         variant="contextual" 
-        title="" 
+        title={
+          <div className="flex-1 flex items-center bg-zinc-100 dark:bg-zinc-800/60 rounded-full h-10 px-4 w-full mr-1" onClick={() => router.push('/mobile/search')}>
+            <Search className="w-4 h-4 text-zinc-500 mr-2 shrink-0" />
+            <span className="text-xs text-zinc-500">Search for products...</span>
+          </div>
+        }
         fallbackUrl="/mobile"
-        rightAction={<div className="flex items-center">{shareAction}{wishlistAction}</div>}
+        rightAction={
+          <button onClick={() => router.push('/mobile/cart')} className="p-2 transition-transform active:scale-95 text-zinc-700 dark:text-zinc-200 relative">
+            <ShoppingBag className="w-6 h-6" />
+            {cartCount > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full pointer-events-none">
+                {cartCount}
+              </span>
+            )}
+          </button>
+        }
       />
       
       {/* ─── MAIN CONTENT SCROLL CONTAINER ─── */}
@@ -248,6 +279,14 @@ export default function MobileProductDetailPage() {
         
         {/* 1. GALLERY (Swipeable) */}
         <div className="relative w-full aspect-[4/5] bg-zinc-100 dark:bg-zinc-900">
+          <div className="absolute top-4 right-4 z-10 flex flex-col gap-3">
+            <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-full shadow-md border border-white/20 dark:border-zinc-800/50">
+              {shareAction}
+            </div>
+            <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-full shadow-md border border-white/20 dark:border-zinc-800/50">
+              {wishlistAction}
+            </div>
+          </div>
           <div 
             ref={galleryRef}
             className="flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-none"
@@ -381,20 +420,22 @@ export default function MobileProductDetailPage() {
         {/* 5. DELIVERY & TRUST */}
         <div className="px-5 py-6 space-y-4">
           {/* Location */}
-          <div className="flex items-center justify-between gap-3 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800/80">
-            <div className="flex flex-col gap-1 w-full overflow-hidden">
-              <span className="text-[10px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase font-bold">
-                Deliver to
-              </span>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#6F4E37] dark:text-[#E6C280] shrink-0" />
-                <span className="text-xs font-sans text-zinc-800 dark:text-zinc-200 font-medium truncate">
-                  {addressText}
+          <DeliveryLocationSheet>
+            <button className="flex items-center justify-between gap-3 p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-zinc-100 dark:border-zinc-800/80 w-full text-left">
+              <div className="flex flex-col gap-1 w-full overflow-hidden">
+                <span className="text-[10px] font-mono tracking-widest text-zinc-500 dark:text-zinc-400 uppercase font-bold">
+                  Deliver to
                 </span>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#6F4E37] dark:text-[#E6C280] shrink-0" />
+                  <span className="text-xs font-sans text-zinc-800 dark:text-zinc-200 font-medium truncate">
+                    {addressText}
+                  </span>
+                </div>
               </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-zinc-400 shrink-0" />
-          </div>
+              <ChevronRight className="w-4 h-4 text-zinc-400 shrink-0" />
+            </button>
+          </DeliveryLocationSheet>
 
           <div className="flex gap-4 p-4 bg-white dark:bg-zinc-950 rounded-2xl border border-zinc-100 dark:border-zinc-800/80">
             <Truck className="w-5 h-5 text-[#6F4E37] dark:text-[#E6C280] shrink-0 mt-0.5" />
@@ -443,131 +484,7 @@ export default function MobileProductDetailPage() {
           </div>
         </div>
 
-        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
 
-        {/* 7. VIRTUAL TRY-ON (MOBILE) */}
-        <div className="px-5 py-8">
-          <div className="mb-6">
-            <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-[#6F4E37] dark:text-[#E6C280] block mb-1">
-              Interactive Experience
-            </span>
-            <h3 className="text-xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-tight">
-              Virtual <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Fitting Room</span>
-            </h3>
-          </div>
-
-          {/* VTO Screen */}
-          <div className="relative w-full aspect-[3/4] bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden mb-4 border border-zinc-200 dark:border-zinc-800">
-            {isLiveCameraActive && hasWebcamAccess ? (
-              <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full h-full object-cover scale-x-[-1]"
-                />
-                
-                {selectedTryOnItem !== null && tryOnWardrobe[selectedTryOnItem] && (
-                  <div 
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300 ease-out"
-                    style={{ transform: `translateY(${clothOffsetY}px)` }}
-                  >
-                    <div 
-                      className={`relative w-[280px] aspect-[3/4] -mt-6 transition-all duration-500 ease-out ${
-                        isClothMorphing ? "scale-95 opacity-40 blur-[3px]" : "scale-100 opacity-100"
-                      }`}
-                      style={{ transform: `scale(${clothScale})` }}
-                    >
-                      <Image
-                        key={`ar-cloth-${selectedTryOnItem}`}
-                        src={tryOnWardrobe[selectedTryOnItem]?.clothCutout || tryOnWardrobe[selectedTryOnItem]?.image}
-                        alt="Fitted Garment"
-                        fill
-                        className="object-cover drop-shadow-2xl"
-                      />
-                    </div>
-                  </div>
-                )}
-                
-                {/* Mobile Camera Controls (Subtle) */}
-                {selectedTryOnItem !== null && (
-                  <div className="absolute bottom-4 right-4 flex flex-col gap-2 bg-black/40 backdrop-blur-md p-2 rounded-xl z-20 pointer-events-auto">
-                    <div className="flex gap-2">
-                      <button onClick={() => setClothScale(s => s - 0.05)} className="w-7 h-7 rounded-full bg-white/20 active:bg-white/40 text-white flex items-center justify-center text-xs">-</button>
-                      <button onClick={() => setClothScale(s => s + 0.05)} className="w-7 h-7 rounded-full bg-white/20 active:bg-white/40 text-white flex items-center justify-center text-xs">+</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="relative w-full h-full">
-                {cameraError && (
-                  <div className="absolute top-4 inset-x-4 bg-red-500/90 text-white text-xs p-3 rounded-xl backdrop-blur-md z-30 text-center shadow-lg animate-in slide-in-from-top-2">
-                    {cameraError}
-                  </div>
-                )}
-                <Image
-                  key={`model-tryon-${selectedTryOnItem ?? "clean"}`}
-                  src={
-                    selectedTryOnItem !== null && tryOnWardrobe[selectedTryOnItem]
-                      ? tryOnWardrobe[selectedTryOnItem]?.modelImage
-                      : "/images/awwwards_tryon_studio.jpg"
-                  }
-                  alt="Studio Model"
-                  fill
-                  className={`object-cover transition-all duration-700 ease-out ${
-                    isClothMorphing ? "opacity-50 blur-sm scale-105" : "opacity-100 scale-100"
-                  }`}
-                />
-              </div>
-            )}
-            
-            {/* Try-on Status Overlay */}
-            {selectedTryOnItem !== null && (
-              <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg text-[10px] font-mono font-bold text-zinc-900 dark:text-white shadow-sm border border-zinc-200/50 dark:border-zinc-800/50 max-w-[200px] truncate">
-                {tryOnWardrobe[selectedTryOnItem]?.name}
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-3 w-full">
-            <button
-              onClick={toggleLiveCamera}
-              className={`flex-1 flex items-center justify-center gap-2 h-11 rounded-xl text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-                isLiveCameraActive
-                  ? "bg-red-500 text-white"
-                  : "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
-              }`}
-            >
-              <Camera className="w-4 h-4" />
-              <span>{isLiveCameraActive ? "Stop Camera" : "Live Try-On"}</span>
-            </button>
-            <button
-              onClick={handleResetFit}
-              className="w-11 h-11 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 active:scale-95 transition-transform"
-            >
-              <RotateCcw className={`w-4 h-4 ${isResetting ? "animate-spin" : ""}`} />
-            </button>
-          </div>
-
-          {/* Wardrobe Items Ribbon */}
-          <div className="mt-5 flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-            {tryOnWardrobe.map((item, idx) => (
-              <button
-                key={item.id}
-                onClick={() => handleSelectWardrobeItem(idx)}
-                className={`w-[60px] h-[80px] shrink-0 rounded-xl overflow-hidden relative border-2 transition-all active:scale-95 ${
-                  idx === selectedTryOnItem ? "border-[#6F4E37] dark:border-[#E6C280] scale-105" : "border-transparent"
-                }`}
-              >
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
 
         {/* 9. REVIEWS */}
         <div className="px-5 py-8">
@@ -581,9 +498,9 @@ export default function MobileProductDetailPage() {
             </div>
           </div>
           
-          <div className="space-y-4">
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
             {mockReviews.slice(0, 3).map((rev) => (
-              <div key={rev.id} className="bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
+              <div key={rev.id} className="w-[280px] shrink-0 snap-center bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase font-mono">{rev.name}</h4>
@@ -626,6 +543,54 @@ export default function MobileProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* ─── TOAST NOTIFICATION ─── */}
+      {toastMsg && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[150] bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 px-4 py-2.5 rounded-full font-mono text-xs font-bold shadow-2xl flex items-center gap-2 animate-in slide-in-from-top-2 w-[90%] max-w-sm">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span className="truncate">{toastMsg}</span>
+        </div>
+      )}
+
+      {/* ─── SIZE SELECTION SHEET ─── */}
+      <Sheet open={isSizeSheetOpen} onOpenChange={setIsSizeSheetOpen}>
+        <SheetContent side="bottom" className="rounded-t-3xl px-0 pb-6 max-h-[85vh] overflow-y-auto">
+          <SheetHeader className="px-5 mb-4 text-left flex flex-row items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-4">
+            <SheetTitle className="font-sans font-bold text-lg text-zinc-900 dark:text-white">
+              Select Size
+            </SheetTitle>
+            <SheetClose className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none">
+              <X className="w-5 h-5 text-zinc-500" />
+            </SheetClose>
+          </SheetHeader>
+          <div className="px-5">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="relative w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-xl overflow-hidden shrink-0">
+                <Image src={currentColor.images[0]} alt={dynamicName} fill className="object-cover" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-bold text-zinc-900 dark:text-white line-clamp-1">{dynamicName}</span>
+                <span className="text-xs text-zinc-500 mt-0.5">₹{productDetail.price.toLocaleString()}</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-3 mb-4">
+              {productDetail.sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => confirmAddToCart(size)}
+                  className={`h-12 rounded-xl text-sm font-bold transition-all border shadow-sm active:scale-95 ${
+                    selectedSize === size
+                      ? "border-[#6F4E37] bg-[#6F4E37] text-white"
+                      : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 hover:border-[#6F4E37] hover:text-[#6F4E37]"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* ─── STICKY PURCHASE BAR ─── */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-5 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] shadow-[0_-10px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">

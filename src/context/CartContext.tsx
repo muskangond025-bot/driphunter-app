@@ -34,6 +34,7 @@ interface CartContextType {
   setIsCartOpen: (open: boolean) => void;
   isWishlistOpen: boolean;
   setIsWishlistOpen: (open: boolean) => void;
+  isLoaded: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -43,6 +44,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleSetIsCartOpen = (open: boolean) => {
     if (open) {
@@ -76,17 +78,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to parse wishlist", e);
       }
     }
+    setIsLoaded(true);
   }, []);
 
-  // Save cart to LocalStorage when changed
+  // Save cart to LocalStorage when changed, but ONLY after initial load
   useEffect(() => {
-    localStorage.setItem("driphunter_cart", JSON.stringify(cart));
-  }, [cart]);
+    if (isLoaded) {
+      localStorage.setItem("driphunter_cart", JSON.stringify(cart));
+    }
+  }, [cart, isLoaded]);
 
-  // Save wishlist to LocalStorage when changed
+  // Save wishlist to LocalStorage when changed, but ONLY after initial load
   useEffect(() => {
-    localStorage.setItem("driphunter_wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
+    if (isLoaded) {
+      localStorage.setItem("driphunter_wishlist", JSON.stringify(wishlist));
+    }
+  }, [wishlist, isLoaded]);
 
   const addToCart = (newItem: Omit<CartItem, "quantity">, qty: number = 1) => {
     setCart((prevCart) => {
@@ -169,6 +176,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setIsCartOpen: handleSetIsCartOpen,
         isWishlistOpen,
         setIsWishlistOpen: handleSetIsWishlistOpen,
+        isLoaded,
       }}
     >
       {children}

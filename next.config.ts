@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/mobile",
+        permanent: false, // use false so we don't aggressively cache a redirect on the live project during transition
+      },
+    ];
+  },
   /* config options here */
   reactCompiler: true,
   images: {

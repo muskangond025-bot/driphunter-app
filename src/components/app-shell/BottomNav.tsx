@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutGrid, Search, ShoppingBag, User } from "lucide-react";
@@ -21,23 +21,54 @@ export default function BottomNav() {
   const { cart } = useCart();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-  // Only show bottom navigation on level 1 routes
   const isVisible = LEVEL_1_ROUTES.includes(pathname);
+  
+  const [langCode, setLangCode] = useState<"en" | "hi">("en");
+
+  useEffect(() => {
+    const savedCode = localStorage.getItem("driphunter_language");
+    if (savedCode === "hi") {
+      setLangCode("hi");
+    } else {
+      setLangCode("en");
+    }
+  }, []);
 
   if (!isVisible) return null;
 
+  const translations = {
+    en: {
+      Home: "Home",
+      Categories: "Categories",
+      Search: "Search",
+      Cart: "Cart",
+      Account: "Account",
+    },
+    hi: {
+      Home: "होम",
+      Categories: "केटेगरीज",
+      Search: "खोजें",
+      Cart: "कार्ट",
+      Account: "प्रोफाइल",
+    }
+  };
+
+  const t = (key: keyof typeof translations.en) => {
+    return translations[langCode][key] || translations.en[key];
+  };
+
   const tabs = [
-    { name: "Home", href: "/mobile", icon: Home },
-    { name: "Categories", href: "/mobile/categories", icon: LayoutGrid },
-    { name: "Search", href: "/mobile/search", icon: Search },
-    { name: "Cart", href: "/mobile/cart", icon: ShoppingBag, badge: cartCount },
-    { name: "Account", href: "/mobile/account", icon: User },
+    { name: "Home", key: "Home" as const, href: "/mobile", icon: Home },
+    { name: "Categories", key: "Categories" as const, href: "/mobile/categories", icon: LayoutGrid },
+    { name: "Search", key: "Search" as const, href: "/mobile/search", icon: Search },
+    { name: "Cart", key: "Cart" as const, href: "/mobile/cart", icon: ShoppingBag, badge: cartCount },
+    { name: "Account", key: "Account" as const, href: "/mobile/account", icon: User },
   ];
 
   return (
     <nav 
       className={cn(
-        "absolute bottom-0 left-0 w-full z-50",
+        "fixed bottom-0 left-0 w-full z-50",
         "bg-background border-t border-border shadow-lg",
         // Safe area padding for bottom indicator on iOS
         "pb-[env(safe-area-inset-bottom)]"
@@ -69,7 +100,7 @@ export default function BottomNav() {
                   )}
                 </div>
                 <span className="text-[10px] font-medium leading-none">
-                  {tab.name}
+                  {t(tab.key)}
                 </span>
               </Link>
             </li>

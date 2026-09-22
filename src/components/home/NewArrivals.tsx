@@ -230,9 +230,9 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
   const featured = featuredSlides[slideIdx];
 
   return (
-    <section className="bg-[#FAF8F5] dark:bg-zinc-950 text-black dark:text-white py-6 md:py-10 border-b border-zinc-200/60 dark:border-zinc-900 overflow-hidden">
-      {/* Editorial Luxury Header */}
-      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-4 md:mb-8">
+    <section className="bg-[#FAF8F5] dark:bg-zinc-950 text-black dark:text-white py-6 md:py-10 border-b border-zinc-200/60 dark:border-zinc-900 overflow-hidden flex flex-col">
+      {/* Editorial Luxury Header (Desktop Only) */}
+      <div className="hidden lg:block w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-8">
         <div className="border-b border-zinc-200/70 dark:border-zinc-800/80 pb-6">
           <SectionHeading
             variant="playfair"
@@ -241,18 +241,18 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
             eyebrow={
               <div className="flex items-center gap-2.5 mb-2.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#6F4E37] dark:bg-[#E6C280] animate-pulse" />
-                <span className="text-[10px] md:text-xs font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
+                <span className="text-xs font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
                   Archive Release &apos;26
                 </span>
               </div>
             }
             action={
-              <div className="flex flex-col md:items-end gap-3 md:max-w-md w-full md:w-auto">
-                <p className="text-xs sm:text-[13px] text-zinc-500 dark:text-zinc-400 font-sans font-light leading-relaxed md:text-right">
+              <div className="flex flex-col items-end gap-3 max-w-md w-auto">
+                <p className="text-[13px] text-zinc-500 dark:text-zinc-400 font-sans font-light leading-relaxed text-right">
                   Curated luxury wardrobe additions. Explore flowing silks, sculptural tailoring, and premium everyday couture.
                 </p>
                 <Link
-                  href={`${basePath}/explore`}
+                  href={basePath === "/mobile" ? `${basePath}/categories` : `${basePath}/explore`}
                   className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-wider text-zinc-900 dark:text-zinc-100 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors group"
                 >
                   <span>EXPLORE ALL DROPS</span>
@@ -272,7 +272,7 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
         }`}
       >
         {/* Left Editorial Lookbook Card */}
-        <div className="w-full lg:w-[32%] xl:w-[30%] shrink-0 relative bg-zinc-950 rounded-[28px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group flex flex-col justify-between p-5 sm:p-7 min-h-[350px] lg:min-h-[480px] border border-zinc-200/50 dark:border-zinc-800/80">
+        <div className="w-full lg:w-[32%] xl:w-[30%] shrink-0 relative bg-zinc-950 rounded-[20px] lg:rounded-[28px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group flex flex-col justify-between p-4 sm:p-5 lg:p-7 aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:min-h-[480px] border border-zinc-200/50 dark:border-zinc-800/80 order-1">
           {/* Background Slides with Ken-Burns Transition */}
           <div className="absolute inset-0 z-0 select-none">
             {featuredSlides.map((s, i) => (
@@ -346,28 +346,28 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
           </div>
 
           {/* Bottom Luxury Lookbook Card */}
-          <div className="relative z-20 w-full backdrop-blur-xl bg-zinc-950/70 border border-white/15 rounded-[22px] p-5 sm:p-6 shadow-2xl transition-all duration-500 text-white mt-auto">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[9px] font-semibold font-mono text-[#E6C280] uppercase tracking-widest">
+          <div className="relative z-20 w-full backdrop-blur-xl bg-zinc-950/70 border border-white/15 rounded-[16px] lg:rounded-[22px] p-4 sm:p-5 lg:p-6 shadow-2xl transition-all duration-500 text-white mt-auto">
+            <div className="flex items-center gap-2 mb-1 lg:mb-2">
+              <span className="text-[8px] lg:text-[9px] font-semibold font-mono text-[#E6C280] uppercase tracking-widest">
                 {featured.season}
               </span>
             </div>
 
-            <h3 className="text-xl sm:text-2xl font-light leading-tight text-white tracking-tight font-playfair">
+            <h3 className="text-lg lg:text-2xl font-light leading-tight text-white tracking-tight font-playfair pr-4">
               {featured.title}
             </h3>
 
-            <p className="text-xs text-zinc-300 mt-2.5 font-sans font-light leading-relaxed">
+            <p className="text-[11px] lg:text-xs text-zinc-300 mt-1.5 lg:mt-2.5 font-sans font-light leading-relaxed hidden lg:block">
               {featured.description}
             </p>
 
-            <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between">
+            <div className="mt-3 lg:mt-4 pt-3 lg:pt-3.5 border-t border-white/10 flex items-center justify-between">
               <Link
                 href={`${basePath}${featured.link}`}
-                className="inline-flex h-11 px-4 bg-white/10 rounded-full items-center justify-center gap-2 text-xs font-mono font-bold tracking-wider text-white hover:bg-white/20 transition-colors group/link"
+                className="inline-flex h-10 lg:h-11 px-4 bg-white/10 rounded-full items-center justify-center gap-2 text-[10px] lg:text-xs font-mono font-bold tracking-wider text-white hover:bg-white/20 transition-colors group/link active:scale-[0.98]"
               >
-                <span>EXPLORE CAPSULE</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform text-[#E6C280]" />
+                <span>EXPLORE</span>
+                <ArrowRight className="w-3 h-3 lg:w-3.5 lg:h-3.5 group-hover/link:translate-x-1 transition-transform text-[#E6C280]" />
               </Link>
 
               {/* Dynamic Dots */}
@@ -387,16 +387,42 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
           </div>
         </div>
 
+        {/* Mobile Header (Hidden on Desktop) */}
+        <div className="lg:hidden w-full order-2 mt-4 px-1">
+          <SectionHeading
+            variant="playfair"
+            className="text-zinc-950 dark:text-zinc-50"
+            title={<>NEW <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">ARRIVALS</span></>}
+            eyebrow={
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#6F4E37] dark:bg-[#E6C280] animate-pulse" />
+                <span className="text-[10px] font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
+                  Fresh drops, just in
+                </span>
+              </div>
+            }
+            action={
+              <Link
+                href={`${basePath}/explore`}
+                className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors mt-2"
+              >
+                <span>VIEW ALL</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            }
+          />
+        </div>
+
         {/* Right Culture-Circle Horizontal Scroller */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="w-full lg:flex-1 flex items-stretch overflow-x-auto scrollbar-none py-2 gap-5 select-none scroll-smooth flex-nowrap px-1 snap-x snap-mandatory md:snap-none pb-6"
+          className="w-full lg:flex-1 flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 lg:gap-5 select-none scroll-smooth flex-nowrap px-1 snap-x snap-mandatory md:snap-none pb-6 order-3"
         >
-          {products.map((p, i) => (
+          {products.slice(0, 6).map((p, i) => (
             <div 
               key={p.id} 
-              className={`w-[240px] sm:w-[265px] shrink-0 flex flex-col justify-between snap-center md:snap-align-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              className={`w-[155px] sm:w-[170px] lg:w-[240px] shrink-0 flex flex-col justify-between snap-start md:snap-align-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                 isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"
               }`}
               style={{ transitionDelay: `${i * 100}ms` }}
@@ -410,7 +436,7 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
       </div>
 
       {/* Bottom Bar: Centered Navigation Buttons with Interactive Progress Bar */}
-      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mt-10">
+      <div className="hidden lg:block w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mt-10">
         <div className="flex items-center justify-between gap-6 max-w-xl mx-auto">
           {/* Left Arrow Button */}
           <button
@@ -431,7 +457,7 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
               />
             </div>
             <span className="text-[10px] font-mono text-zinc-400 font-bold">
-              0{products.length}
+              0{Math.min(6, products.length)}
             </span>
           </div>
 

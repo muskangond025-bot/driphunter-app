@@ -92,22 +92,27 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
       }`}
     >
       {/* Premium Editorial Header */}
-      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-8">
-        <div className="border-b border-zinc-100 dark:border-zinc-800/80 pb-5">
+      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-6 md:mb-8">
+        <div className="border-b border-zinc-100 dark:border-zinc-800/80 pb-4 md:pb-5">
           <SectionHeading
             variant="playfair"
             className="text-zinc-900 dark:text-zinc-100"
             title={<>Shop <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">by Category</span></>}
             eyebrow={
               <span className="text-[10px] md:text-xs font-semibold tracking-[0.3em] text-[#6F4E37] dark:text-[#E6C280] uppercase block font-mono">
-                Explore the Archive
+                EXPLORE
               </span>
             }
             action={
-              <div className="flex items-center justify-between md:justify-end gap-4">
+              <div className="flex items-center justify-between md:justify-end gap-4 w-full">
                 <p className="text-xs md:text-sm text-zinc-400 font-sans font-light leading-relaxed max-w-xs hidden lg:block">
                   Meticulously cataloged collections from leading streetwear brands.
                 </p>
+                {basePath === "/mobile" && (
+                  <Link href={`${basePath}/categories`} className="text-[10px] sm:text-xs font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 uppercase tracking-widest flex items-center gap-1 md:hidden">
+                    View All <ArrowRight className="w-3 h-3" />
+                  </Link>
+                )}
               </div>
             }
           />
@@ -121,7 +126,7 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUpOrLeave}
-          className={`flex gap-5 sm:gap-6 py-4 px-4 sm:px-8 overflow-x-auto scrollbar-none select-none snap-x snap-mandatory ${
+          className={`flex gap-3 md:gap-5 py-4 px-4 sm:px-8 overflow-x-auto scrollbar-none select-none snap-x snap-mandatory ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           style={{
@@ -133,31 +138,31 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
               key={`${cat.name}-${idx}`}
               href={`${basePath}${cat.href}`}
               draggable={false}
-              className="flex flex-col items-center gap-4 group/card shrink-0 snap-start cursor-pointer w-[75vw] sm:w-[35vw] md:w-44 focus:outline-none transform-gpu"
+              className="flex flex-col items-center group/card shrink-0 snap-start cursor-pointer w-[115px] sm:w-[125px] md:w-44 focus:outline-none transform-gpu"
               onClick={(e) => {
                 if (isDragging) {
                   e.preventDefault();
                 }
               }}
             >
-              <div className="w-full aspect-[4/5] relative bg-zinc-100 dark:bg-zinc-900 rounded-[2rem] overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.01)] group-hover/card:shadow-[0_12px_28px_rgba(111,78,55,0.15)] border border-zinc-200/60 dark:border-zinc-800 group-hover/card:border-[#6F4E37]/40 dark:group-hover/card:border-[#E6C280]/40 transition-all duration-300 transform group-hover/card:-translate-y-1">
+              <div className="w-full aspect-[3/4] md:aspect-[4/5] relative bg-zinc-100 dark:bg-zinc-900 rounded-[18px] sm:rounded-[20px] md:rounded-[2rem] overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.01)] group-hover/card:shadow-[0_12px_28px_rgba(111,78,55,0.15)] border border-zinc-200/60 dark:border-zinc-800 group-hover/card:border-[#6F4E37]/40 dark:group-hover/card:border-[#E6C280]/40 transition-all duration-300 transform group-hover/card:-translate-y-1">
                 <Image
                   alt={cat.name}
                   src={cat.image}
                   fill
                   draggable={false}
                   className="object-cover group-hover/card:scale-105 transition-transform duration-500 ease-out"
-                  sizes="(max-width: 640px) 130px, (max-width: 768px) 160px, 180px"
+                  sizes="(max-width: 640px) 115px, (max-width: 768px) 125px, 180px"
                 />
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-65 group-hover/card:opacity-85 transition-opacity duration-300" />
                 
                 {/* Text overlay at the bottom */}
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 flex flex-col justify-end">
-                  <span className="text-[13px] sm:text-sm font-bold text-white uppercase tracking-widest font-mono mb-1.5 text-shadow-sm px-2">
+                <div className="absolute inset-x-0 bottom-0 p-3 md:p-5 flex flex-col justify-end">
+                  <span className="text-[11px] md:text-[13px] sm:text-xs font-medium md:font-bold text-white uppercase tracking-widest font-mono md:mb-1.5 text-shadow-sm px-1">
                     {cat.name}
                   </span>
-                  <span className="text-[10px] font-medium text-white/80 uppercase tracking-widest font-mono opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 px-2">
+                  <span className="hidden md:flex text-[10px] font-medium text-white/80 uppercase tracking-widest font-mono opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 items-center gap-1.5 px-1">
                     Explore
                     <svg className="w-3 h-3 transform group-hover/card:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

@@ -2,7 +2,9 @@
 
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const allBrands = [
   {
@@ -242,9 +244,9 @@ export default function BrandShowcase({ basePath = "" }: { basePath?: string }) 
   };
 
   return (
-    <section className="bg-white dark:bg-zinc-950 pt-10 pb-6 sm:pt-14 sm:pb-8 border-t border-zinc-100 dark:border-zinc-900 select-none overflow-hidden relative">
-      {/* Premium Editorial Header */}
-      <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-8">
+    <section ref={ref} className="bg-white dark:bg-zinc-950 pt-10 pb-6 sm:pt-14 sm:pb-8 border-t border-zinc-100 dark:border-zinc-900 select-none overflow-hidden relative">
+      {/* Desktop Editorial Header */}
+      <div className="hidden md:block w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-100 dark:border-zinc-800/80 pb-5">
           <div>
             <span className="text-[10px] md:text-xs font-semibold tracking-[0.3em] text-[#6F4E37] dark:text-[#E6C280] uppercase block mb-3 font-mono">
@@ -263,10 +265,35 @@ export default function BrandShowcase({ basePath = "" }: { basePath?: string }) 
         </div>
       </div>
 
-      {/* Seamless Bi-Directional Infinite Looper & Horizontal Scroll Track */}
+      {/* Mobile Editorial Header */}
+      <div className="md:hidden border-b border-zinc-100 dark:border-zinc-800/80 pb-5 mx-4 mb-4">
+        <SectionHeading
+          variant="playfair"
+          className="text-zinc-950 dark:text-zinc-50"
+          title={<>FEATURED <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">LABELS</span></>}
+          eyebrow={
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-[#6F4E37] dark:text-[#E6C280]" />
+              <span className="text-[10px] font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
+                Discover the labels behind the drip.
+              </span>
+            </div>
+          }
+          action={
+            <Link
+              href={`${basePath}/brands`}
+              className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wider text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors mt-2"
+            >
+              <span>VIEW ALL</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          }
+        />
+      </div>
+
+      {/* Desktop Seamless Bi-Directional Infinite Looper */}
       <div
-        ref={ref}
-        className={`w-full flex flex-col transition-all duration-1000 ease-out ${
+        className={`hidden md:flex w-full flex-col transition-all duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
@@ -297,6 +324,25 @@ export default function BrandShowcase({ basePath = "" }: { basePath?: string }) 
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Horizontal Carousel Container */}
+      <div 
+        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
+        {allBrands.map((brand) => (
+          <Link
+            key={`mobile-${brand.slug}`}
+            href={`${basePath}/brands/${brand.slug}`}
+            className="w-[140px] shrink-0 h-24 flex items-center justify-center rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 text-zinc-900 dark:text-zinc-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)] snap-start px-6 transition-transform active:scale-95"
+            aria-label={brand.name}
+          >
+            {brand.svg}
+          </Link>
+        ))}
+        <div className="w-4 shrink-0 pointer-events-none" />
       </div>
     </section>
   );

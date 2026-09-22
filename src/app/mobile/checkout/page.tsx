@@ -51,6 +51,14 @@ export default function MobileCheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState("");
+  
+  // Read saved coupon on mount
+  React.useEffect(() => {
+    const saved = localStorage.getItem("driphunter_applied_coupon");
+    if (saved) {
+      setAppliedCoupon(saved);
+    }
+  }, []);
 
   // Pre-fill from AddressContext if available
   useEffect(() => {
@@ -88,7 +96,7 @@ export default function MobileCheckoutPage() {
   // Desktop checkout does not add the 500 flat fee MRP logic that Cart does,
   // it uses totalAmount = subtotal - discount directly in its price breakdown.
   // Wait, I will use exactly what desktop checkout/page.tsx has:
-  const totalAmount = subtotal - couponDiscount;
+  const totalAmount = subtotal - couponDiscount + 10;
 
   // ─── VALIDATION & NAVIGATION ───
   const handleNextStep = () => {
@@ -176,6 +184,7 @@ export default function MobileCheckoutPage() {
     const code = couponCode.trim().toUpperCase();
     if (code === "DRIP10" || code === "VIP15") {
       setAppliedCoupon(code);
+      localStorage.setItem("driphunter_applied_coupon", code);
       setCouponError("");
     } else {
       setCouponError("Invalid Coupon.");
@@ -416,9 +425,12 @@ export default function MobileCheckoutPage() {
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
         <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500 mb-3">Apply Coupon</h3>
         {appliedCoupon ? (
-          <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-xl border border-emerald-200 dark:border-emerald-800/50">
+          <div className="flex justify-between items-center bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-xl p-3">
             <span className="text-xs font-bold text-emerald-800 dark:text-emerald-400">{appliedCoupon} Applied</span>
-            <button onClick={() => setAppliedCoupon(null)} className="text-xs font-bold text-emerald-700">Remove</button>
+            <button onClick={() => {
+              setAppliedCoupon(null);
+              localStorage.removeItem("driphunter_applied_coupon");
+            }} className="text-xs font-bold text-emerald-700">Remove</button>
           </div>
         ) : (
           <form onSubmit={handleApplyCoupon} className="flex gap-2">
