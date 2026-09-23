@@ -2,19 +2,17 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import SearchOverlay from "@/components/layout/SearchOverlay";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +46,6 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-[#0a0a0a] text-foreground">
-      <Navbar onSearchClick={() => setIsSearchOpen(true)} />
       
       <main className="flex-grow relative flex items-center justify-center overflow-hidden select-none py-20 px-4">
         
@@ -68,11 +65,19 @@ export default function LoginPage() {
         </div>
 
         {/* ─── GLASSMORPHISM FORM CONTAINER ─── */}
-        <div className="relative z-10 w-full max-w-[480px] animate-fade-in">
+        <div className="relative z-10 w-full max-w-[480px] animate-fade-in mt-12 sm:mt-0">
           
           {/* Floating Glass Panel */}
-          <div className="bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-[0_0_80px_rgba(0,0,0,0.05)] dark:shadow-[0_0_80px_rgba(0,0,0,0.4)]">
+          <div className="bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-[0_0_80px_rgba(0,0,0,0.05)] dark:shadow-[0_0_80px_rgba(0,0,0,0.4)] relative">
             
+            {/* ─── CLOSE BUTTON ─── */}
+            <button 
+              onClick={() => router.push("/")}
+              className="absolute top-6 right-6 p-2 rounded-full text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
             <div className="space-y-2 mb-12 text-center">
               <div className="w-12 h-12 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                 <Lock className="w-5 h-5" />
@@ -211,9 +216,6 @@ export default function LoginPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   );
 }

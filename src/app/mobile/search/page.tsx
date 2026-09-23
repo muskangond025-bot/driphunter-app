@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import AppHeader from "@/components/app-shell/AppHeader";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
 import ProductCard from "@/components/product/ProductCard";
@@ -108,17 +109,17 @@ function MobileSearchContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products, brands..."
-              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-10 pr-[72px] py-3 text-sm font-medium text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-[#6F4E37] focus:ring-1 focus:ring-[#6F4E37] transition-all shadow-sm"
+              className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-[#6F4E37] dark:focus:border-[#E6C280] rounded-xl pl-10 pr-[72px] py-3 text-sm focus:ring-0 focus-visible:ring-0 outline-none transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-500 text-zinc-900 dark:text-zinc-100"
             />
             {searchQuery ? (
               <button 
                 onClick={handleClearSearch}
-                className="absolute right-3 p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 bg-white dark:bg-zinc-900"
+                className="absolute right-3 p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 bg-zinc-50 dark:bg-zinc-950"
               >
                 <X className="w-4 h-4" />
               </button>
             ) : (
-              <div className="absolute right-2 flex items-center gap-0.5 bg-white dark:bg-zinc-900">
+              <div className="absolute right-2 flex items-center gap-0.5 bg-zinc-50 dark:bg-zinc-950">
                 <button 
                   onClick={isListening ? stopListening : startListening}
                   className={`p-2 rounded-xl transition-all ${
@@ -160,7 +161,7 @@ function MobileSearchContent() {
                   <button
                     key={keyword}
                     onClick={() => setSearchQuery(keyword)}
-                    className="px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-full text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:border-[#6F4E37] dark:hover:border-[#E6C280] hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors shadow-sm"
+                    className="px-4 py-2 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-full text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300 hover:border-[#6F4E37] dark:hover:border-[#E6C280] hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors shadow-sm"
                   >
                     {keyword}
                   </button>
@@ -198,11 +199,17 @@ function MobileSearchContent() {
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <Search className="w-8 h-8 text-zinc-300 dark:text-zinc-700 mb-4" />
                   <p className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-widest mb-2">
-                    No items found
+                    No results found
                   </p>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-[200px]">
-                    We couldn't find anything matching "{searchQuery}".
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-[200px] mb-6">
+                    Try a different keyword or browse our categories.
                   </p>
+                  <Link 
+                    href="/mobile/categories" 
+                    className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider active:scale-95 transition-transform"
+                  >
+                    Browse Categories
+                  </Link>
                 </div>
               )}
             </>
@@ -212,7 +219,7 @@ function MobileSearchContent() {
 
       {/* Fixed Filter & Sort Bar (Only show if we have a search query, or maybe always. Let's show only if there is a query) */}
       {searchQuery.trim() && (
-        <div className="fixed bottom-[64px] left-1/2 -translate-x-1/2 w-full max-w-md z-40 pb-safe">
+        <div className="fixed bottom-[calc(64px+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 w-full max-w-md z-40">
           <div className="flex w-full">
             <FilterSortBottomSheet 
               currentFilters={filters}

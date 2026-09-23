@@ -33,6 +33,7 @@ type PrefsKeys = keyof typeof defaultPrefs;
 export default function MobileNotificationSettingsPage() {
   const [mounted, setMounted] = useState(false);
   const [prefs, setPrefs] = useState(defaultPrefs);
+  const [browserPermission, setBrowserPermission] = useState<string>("default");
 
   useEffect(() => {
     const saved = localStorage.getItem("drip_notification_prefs");
@@ -43,6 +44,16 @@ export default function MobileNotificationSettingsPage() {
         console.error("Failed to parse notification prefs", e);
       }
     }
+    
+    // Read real browser permission
+    if (typeof window !== "undefined" && "Notification" in window) {
+      const currentPerm = Notification.permission;
+      setBrowserPermission(currentPerm);
+      localStorage.setItem("drip_notification_permission_status", currentPerm);
+    } else {
+      setBrowserPermission("unsupported");
+    }
+    
     setMounted(true);
   }, []);
 
@@ -138,6 +149,18 @@ export default function MobileNotificationSettingsPage() {
             Manage how DripHunter keeps you updated.
           </p>
         </div>
+        
+        {browserPermission === "denied" && (
+          <div className="px-4 py-2 mb-2 animate-in fade-in duration-300">
+            <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl p-4 flex items-start gap-3">
+              <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              <div className="flex flex-col">
+                <span className="text-sm font-bold text-red-700 dark:text-red-400">Notifications Blocked</span>
+                <span className="text-xs text-red-600 dark:text-red-500/80 mt-1 leading-relaxed">Notifications are blocked in your browser settings. Turn them on to receive these updates.</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Global Controls */}
         <div className="px-4 py-4">

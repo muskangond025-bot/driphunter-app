@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, use, useRef, useEffect } from "react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import SearchOverlay from "@/components/layout/SearchOverlay";
+import AppHeader from "@/components/app-shell/AppHeader";
 import Link from "next/link";
 import { ChevronRight, ArrowLeft, Send, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -139,8 +137,7 @@ export default function OrderChatPage({ params }: { params: Promise<{ id: string
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-sans antialiased">
-      <Navbar onSearchClick={() => setIsSearchOpen(true)} />
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <AppHeader title="Order Support" variant="contextual" fallbackUrl={`/orders/${orderId}`} showActions={true} />
 
       {/* ─── MAIN CONTENT ─── */}
       <main className="flex-grow bg-zinc-50 dark:bg-zinc-950 pt-8 pb-16 px-4 sm:px-6 md:px-12 w-full mx-auto relative z-20">
@@ -305,8 +302,6 @@ export default function OrderChatPage({ params }: { params: Promise<{ id: string
 
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

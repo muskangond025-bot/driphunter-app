@@ -2,10 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import AppHeader from "@/components/app-shell/AppHeader";
 import { cn } from "@/lib/utils";
-import SearchOverlay from "@/components/layout/SearchOverlay";
+
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import {
   ArrowRight,
@@ -23,7 +22,7 @@ import {
 } from "lucide-react";
 
 export default function AffiliatePage() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -135,13 +134,7 @@ export default function AffiliatePage() {
         </div>
       )}
 
-      {/* Navbar & Search */}
-      <Navbar onSearchClick={() => setIsSearchOpen(true)} />
-
-      <SearchOverlay
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+      <AppHeader title="Affiliate" variant="contextual" showActions={true} />
 
       {/* ─── HERO BANNER ─── */}
       <section
@@ -683,8 +676,7 @@ export default function AffiliatePage() {
 
       </main>
 
-      {/* Footer */}
-      <Footer />
+
     </div>
   );
 }

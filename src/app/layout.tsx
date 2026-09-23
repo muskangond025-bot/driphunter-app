@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { CartProvider } from "@/context/CartContext";
 import { AddressProvider } from "@/context/AddressContext";
+import { PaymentProvider } from "@/context/PaymentContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import AgentationWrapper from "@/components/layout/AgentationWrapper";
 import SmoothScroll from "@/components/SmoothScroll";
 
@@ -60,15 +62,19 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <CartProvider>
-            <AddressProvider>
-              <LiveChatProvider>
-                <SmoothScroll>
-                  {children}
-                </SmoothScroll>
-                <AgentationWrapper />
-                <LiveChatWidget />
-              </LiveChatProvider>
-            </AddressProvider>
+            <LanguageProvider>
+              <AddressProvider>
+                <PaymentProvider>
+                  <LiveChatProvider>
+                    <SmoothScroll>
+                      {children}
+                    </SmoothScroll>
+                    <AgentationWrapper />
+                    <LiveChatWidget />
+                  </LiveChatProvider>
+                </PaymentProvider>
+              </AddressProvider>
+            </LanguageProvider>
           </CartProvider>
         </ThemeProvider>
       </body>

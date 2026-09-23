@@ -14,7 +14,7 @@ import {
   FileText,
   Lock,
   Globe,
-  ChevronRight,
+  ChevronRight, ChevronDown,
   ArrowUp,
   Mail,
   Scale,
@@ -39,6 +39,8 @@ import {
 
 export default function TermsPage() {
   const [activeSection, setActiveSection] = useState("section-1");
+  const [openSections, setOpenSections] = useState<string[]>([]);
+  const toggleSection = (id: string) => setOpenSections(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
   const [searchTerm, setSearchTerm] = useState("");
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -341,7 +343,10 @@ export default function TermsPage() {
               id="section-1"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-1")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 01 // PREAMBLE
@@ -349,18 +354,23 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Binding Terms</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-1")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-1"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                   title="Copy Clause Link"
                 >
                   {copiedSection === "section-1" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-1" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                1. Introduction & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Acceptance</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Introduction & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Acceptance</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-1") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-1") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -375,6 +385,8 @@ export default function TermsPage() {
                 <strong className="text-zinc-900 dark:text-white font-bold block">Key Governance Principle:</strong>
                 <span>Continuous usage of DripHunter following published revisions constitutes full legal acceptance of all amended terms.</span>
               </div>
+            
+              </div>
             </article>
 
             {/* 2. USER ACCOUNTS */}
@@ -382,7 +394,10 @@ export default function TermsPage() {
               id="section-2"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-2")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 02 // ACCESS
@@ -390,17 +405,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Authentication</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-2")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-2"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-2" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-2" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                2. User Accounts & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Security</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">User Accounts & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Security</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-2") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-2") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -412,6 +432,8 @@ export default function TermsPage() {
                   <li><strong className="text-zinc-900 dark:text-white">Account Revocation:</strong> DripHunter reserves the right to immediately terminate any profile involved in fraud or suspicious chargebacks.</li>
                 </ul>
               </div>
+            
+              </div>
             </article>
 
             {/* 3. PRODUCTS */}
@@ -419,7 +441,10 @@ export default function TermsPage() {
               id="section-3"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-3")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 03 // ARCHIVE
@@ -427,17 +452,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Garment Listings</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-3")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-3"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-3" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-3" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                3. Products, Drops & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Listings</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Products, Drops & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Listings</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-3") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-3") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -447,6 +477,8 @@ export default function TermsPage() {
                   We ensure strict fidelity in garment photography, fabric GSM specifications, and sizing metrics. Minor variances in distressing, acid wash finishes, or screen-printed patina are inherent characteristics of artisanal streetwear production.
                 </p>
               </div>
+            
+              </div>
             </article>
 
             {/* 4. PRICING */}
@@ -454,7 +486,10 @@ export default function TermsPage() {
               id="section-4"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-4")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 04 // VALUATION
@@ -462,17 +497,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Taxes & Currency</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-4")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-4"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-4" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-4" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                4. Pricing, Taxes & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Currency</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Pricing, Taxes & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Currency</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-4") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-4") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -482,6 +522,8 @@ export default function TermsPage() {
                   Archival pieces and secondary market deadstock items are subject to dynamic real-time market pricing based on collector demand. Promotional discount codes (such as <code className="bg-zinc-100 dark:bg-zinc-800 text-[#6F4E37] dark:text-[#E6C280] px-2 py-0.5 rounded font-mono text-xs">DRIP10</code>) cannot be stacked unless explicitly advertised.
                 </p>
               </div>
+            
+              </div>
             </article>
 
             {/* 5. ORDERS */}
@@ -489,7 +531,10 @@ export default function TermsPage() {
               id="section-5"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-5")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 05 // PLACEMENT
@@ -497,17 +542,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Verification</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-5")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-5"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-5" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-5" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                5. Orders & Placement <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Acceptance</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Orders & Placement <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Acceptance</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-5") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-5") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -517,6 +567,8 @@ export default function TermsPage() {
                   DripHunter reserves the right to cancel or allocate purchase limits on drop orders if inventory allocation discrepancies or high-volume bot attacks are detected during release hours.
                 </p>
               </div>
+            
+              </div>
             </article>
 
             {/* 6. PAYMENTS */}
@@ -524,7 +576,10 @@ export default function TermsPage() {
               id="section-6"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-6")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 06 // ESCROW
@@ -532,17 +587,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">256-Bit Protection</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-6")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-6"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-6" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-6" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                6. Payments & Escrow <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Security</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Payments & Escrow <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Security</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-6") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-6") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -552,6 +612,8 @@ export default function TermsPage() {
                   Funds are secured in escrow until your order passes our authenticity vault check and is handed over to express delivery couriers.
                 </p>
               </div>
+            
+              </div>
             </article>
 
             {/* 7. SHIPPING */}
@@ -559,7 +621,10 @@ export default function TermsPage() {
               id="section-7"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-7")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 07 // TRANSIT
@@ -567,17 +632,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Express Network</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-7")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-7"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-7" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-7" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                7. Shipping & Pan-India <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Delivery</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Shipping & Pan-India <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Delivery</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-7") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-7") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -594,6 +664,8 @@ export default function TermsPage() {
                   </div>
                 </div>
               </div>
+            
+              </div>
             </article>
 
             {/* 8. RETURNS & REFUNDS */}
@@ -601,7 +673,10 @@ export default function TermsPage() {
               id="section-8"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-8")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 08 // REVERSALS
@@ -609,17 +684,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">7-Day Guarantee</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-8")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-8"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-8" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-8" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                8. Returns & Refunds <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Policy</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Returns & Refunds <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Policy</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-8") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-8") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -629,6 +709,8 @@ export default function TermsPage() {
                   Garments must be returned in unworn, unwashed condition with all serialized DripHunter authenticity tags attached. Approved refunds are credited directly to your original payment source within 3–5 business days post-inspection.
                 </p>
               </div>
+            
+              </div>
             </article>
 
             {/* 9. CANCELLATION */}
@@ -636,7 +718,10 @@ export default function TermsPage() {
               id="section-9"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-9")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 09 // MODIFICATIONS
@@ -644,22 +729,29 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Pre-Vault Dispatch</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-9")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-9"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-9" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-9" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                9. Order Cancellation <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Terms</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Order Cancellation <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Terms</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-9") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-9") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
                   Orders can be cancelled with an instant refund directly from your account dashboard before the item is sealed into tamper-evident vault packaging. After courier handover, standard return protocols apply upon delivery.
                 </p>
+              </div>
+            
               </div>
             </article>
 
@@ -668,7 +760,10 @@ export default function TermsPage() {
               id="section-10"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-10")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 10 // PLEDGE
@@ -676,17 +771,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Zero Tolerance</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-10")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-10"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-10" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-10" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                10. 100% Authenticity <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Guarantee</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">100% Authenticity <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Guarantee</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-10") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-10") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -704,6 +804,8 @@ export default function TermsPage() {
                   </div>
                 </div>
               </div>
+            
+              </div>
             </article>
 
             {/* 11. SELLER TERMS */}
@@ -711,7 +813,10 @@ export default function TermsPage() {
               id="section-11"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-11")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 11 // MERCHANTS
@@ -719,17 +824,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Consignment</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-11")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-11"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-11" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-11" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                11. Seller Terms & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Consignment</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Seller Terms & <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Consignment</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-11") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-11") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -739,6 +849,8 @@ export default function TermsPage() {
                   Any merchant attempting to consign replica goods faces permanent account deactivation and civil liability reporting.
                 </p>
               </div>
+            
+              </div>
             </article>
 
             {/* 12. INTELLECTUAL PROPERTY */}
@@ -746,7 +858,10 @@ export default function TermsPage() {
               id="section-12"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-12")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 12 // ASSETS
@@ -754,22 +869,29 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Copyright & IP</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-12")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-12"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-12" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-12" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                12. Intellectual Property <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Rights</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Intellectual Property <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Rights</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-12") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-12") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
                   All platform graphics, lookbooks, curation code, video content, and branding emblems belong exclusively to DripHunter. Unsanctioned scraping, reverse engineering, or unauthorized trademark usage is prohibited.
                 </p>
+              </div>
+            
               </div>
             </article>
 
@@ -778,7 +900,10 @@ export default function TermsPage() {
               id="section-13"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-13")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 13 // DATA
@@ -786,17 +911,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Privacy Guard</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-13")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-13"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-13" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-13" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                13. Privacy & Information <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Governance</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Privacy & Information <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Governance</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-13") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-13") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -820,6 +950,8 @@ export default function TermsPage() {
                   </Link>
                 </div>
               </div>
+            
+              </div>
             </article>
 
             {/* 14. LIABILITY */}
@@ -827,7 +959,10 @@ export default function TermsPage() {
               id="section-14"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-14")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 14 // INDEMNITY
@@ -835,22 +970,29 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Liability Bounds</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-14")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-14"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-14" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-14" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                14. Limitation of <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Liability</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Limitation of <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Liability</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-14") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-14") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
                   To the extent permitted by Indian statutory law, DripHunter&apos;s aggregate liability for any claim arising out of a purchase transaction is strictly limited to the actual amount paid by the customer for the item in dispute.
                 </p>
+              </div>
+            
               </div>
             </article>
 
@@ -859,7 +1001,10 @@ export default function TermsPage() {
               id="section-15"
               className="py-10 border-b border-zinc-200/60 dark:border-zinc-800/60 space-y-5 text-left relative group first:pt-0 last:border-b-0"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+
+              <div onClick={() => toggleSection("section-15")} className="cursor-pointer group select-none block w-full">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  
                 <div className="flex items-center gap-2">
                   <span className="text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-[#6F4E37]/10 dark:bg-[#E6C280]/15 text-[#6F4E37] dark:text-[#E6C280]">
                     CLAUSE 15 // CONCIERGE
@@ -867,17 +1012,22 @@ export default function TermsPage() {
                   <span className="text-[9px] font-mono text-zinc-400 uppercase font-bold">Support Liaison</span>
                 </div>
                 <button
-                  onClick={() => handleCopyLink("section-15")}
+                  onClick={(e) => { e.stopPropagation(); handleCopyLink("section-15"); }}
                   className="text-zinc-400 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer border-none bg-transparent flex items-center gap-1 text-[9px] font-mono"
                 >
                   {copiedSection === "section-15" ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copiedSection === "section-15" ? "Copied" : "Share"}</span>
                 </button>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">
-                15. Contact & Legal <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Concierge</span>
+              
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05]">Contact & Legal <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Concierge</span>
               </h2>
+                  <ChevronDown className={`w-6 h-6 text-zinc-400 transition-transform duration-300 shrink-0 ${openSections.includes("section-15") ? "rotate-180" : ""}`} />
+                </div>
+              </div>
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden mt-4 space-y-5 ${openSections.includes("section-15") ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0 m-0"}`}>
+                
 
               <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans space-y-3.5 font-normal">
                 <p>
@@ -896,6 +1046,8 @@ export default function TermsPage() {
                     DripHunter Curation & Logistics Pvt Ltd, Mumbai, Maharashtra, India.
                   </p>
                 </div>
+              </div>
+            
               </div>
             </article>
 

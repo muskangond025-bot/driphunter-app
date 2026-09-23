@@ -1,6 +1,7 @@
 import React from "react";
 import MobileAppShell from "@/components/app-shell/MobileAppShell";
 import { Metadata } from "next";
+import OfflineWrapper from "@/components/mobile/OfflineWrapper";
 
 export const metadata: Metadata = {
   title: "DripHunter Mobile",
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function MobileLayout({ children }: { children: React.ReactNode }) {
-  return <MobileAppShell>{children}</MobileAppShell>;
+  return (
+    <OfflineWrapper>
+      <MobileAppShell>{children}</MobileAppShell>
+    </OfflineWrapper>
+  );
 }

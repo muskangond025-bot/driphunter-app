@@ -89,6 +89,7 @@ export default function MobileWishlistPage() {
                     price={priceFormatted}
                     image={item.image}
                     inStock={true}
+                    basePath="/mobile"
                   />
                 );
               })}

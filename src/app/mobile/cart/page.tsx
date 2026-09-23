@@ -103,7 +103,7 @@ export default function MobileCartPage() {
   };
 
   // 5. Active Address
-  const activeAddress = addresses.find(a => a.id === activeAddressId) || addresses[0];
+  const activeAddress = addresses.find(a => a.id === activeAddressId);
 
   return (
     <AppPageLayout hasBottomNav={true}>

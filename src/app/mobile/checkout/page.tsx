@@ -16,6 +16,7 @@ import { useCart } from "@/context/CartContext";
 import { useAddress } from "@/context/AddressContext";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
 import AppHeader from "@/components/app-shell/AppHeader";
+import { usePayment } from "@/context/PaymentContext";
 
 type CheckoutStep = "address" | "delivery" | "payment" | "review";
 
@@ -26,6 +27,9 @@ export default function MobileCheckoutPage() {
 
   const [step, setStep] = useState<CheckoutStep>("address");
   const [formErrors, setFormErrors] = useState<string[]>([]);
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   // ─── FORM STATE ───
   const [email, setEmail] = useState("");
@@ -47,6 +51,30 @@ export default function MobileCheckoutPage() {
   const [cardCvv, setCardCvv] = useState("");
   const [upiId, setUpiId] = useState("");
 
+  const { savedUpis, savedCards, addUpi, addCard } = usePayment();
+  const [selectedSavedUpi, setSelectedSavedUpi] = useState<string>("new");
+  const [selectedSavedCard, setSelectedSavedCard] = useState<string>("new");
+  const [saveUpiFlag, setSaveUpiFlag] = useState(false);
+  const [saveCardFlag, setSaveCardFlag] = useState(false);
+
+  const [upiInitialized, setUpiInitialized] = useState(false);
+  const [cardInitialized, setCardInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!upiInitialized && savedUpis.length > 0) {
+      setSelectedSavedUpi(savedUpis[0]);
+      setUpiInitialized(true);
+    }
+  }, [savedUpis, upiInitialized]);
+
+  useEffect(() => {
+    if (!cardInitialized && savedCards.length > 0) {
+      const defaultCard = savedCards.find(c => c.isDefault) || savedCards[0];
+      setSelectedSavedCard(defaultCard.id);
+      setCardInitialized(true);
+    }
+  }, [savedCards, cardInitialized]);
+
   // ─── COUPON LOGIC (Local State matching Desktop) ───
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
@@ -62,7 +90,7 @@ export default function MobileCheckoutPage() {
 
   // Pre-fill from AddressContext if available
   useEffect(() => {
-    const active = addresses.find(a => a.id === activeAddressId) || addresses[0];
+    const active = addresses.find(a => a.id === activeAddressId);
     if (active && !firstName) {
       // Very basic split for demo purposes if we only have 'name'
       const nameParts = active.name.split(" ");
@@ -113,23 +141,37 @@ export default function MobileCheckoutPage() {
       setStep("payment");
     } else if (step === "payment") {
       if (paymentMethod === "card") {
-        if (!cardName) errors.push("Cardholder Name required.");
-        if (cardNumber.replace(/\s/g, "").length < 16) errors.push("Valid 16-digit Card Number required.");
-        if (!cardExpiry.includes("/")) errors.push("Valid Expiry (MM/YY) required.");
-        if (cardCvv.length < 3) errors.push("Valid CVV required.");
+        if (selectedSavedCard === "new") {
+          if (!cardName) errors.push("Cardholder Name required.");
+          if (cardNumber.replace(/\s/g, "").length < 16) errors.push("Valid 16-digit Card Number required.");
+          if (!cardExpiry.includes("/")) errors.push("Valid Expiry (MM/YY) required.");
+          if (cardCvv.length < 3) errors.push("Valid CVV required.");
+        }
       } else if (paymentMethod === "upi") {
-        if (!upiId.includes("@")) errors.push("Valid UPI ID required.");
+        if (selectedSavedUpi === "new") {
+          if (!upiId.includes("@")) errors.push("Valid UPI ID required.");
+        }
       }
       if (errors.length === 0) setStep("review");
     }
     
     setFormErrors(errors);
     if (errors.length > 0) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      alert("Please fix the required details.");
+      const mainElement = document.querySelector('main');
+      if (mainElement) {
+        mainElement.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
   const handlePlaceOrder = () => {
+
+    setIsProcessing(true);
+    setPaymentError(null);
+
     const generatedId = "DH" + Math.floor(10000 + Math.random() * 90000);
     
     const orderPayload = {
@@ -148,9 +190,13 @@ export default function MobileCheckoutPage() {
       zip: zip,
       paymentMethod:
         paymentMethod === "card"
-          ? `Credit/Debit Card (ending in ${cardNumber.slice(-4) || "4242"})`
+          ? selectedSavedCard === "new"
+            ? `Credit/Debit Card (ending in ${cardNumber.slice(-4) || "4242"})`
+            : `Credit/Debit Card (Saved Card)`
           : paymentMethod === "upi"
-          ? `UPI (${upiId || "user@upi"})`
+          ? selectedSavedUpi === "new"
+            ? `UPI (${upiId || "user@upi"})`
+            : `UPI (${selectedSavedUpi})`
           : "Cash on Delivery (COD)",
       shippingMethod: shippingMethod === "express" ? "Express Vault Tracked" : "Standard Delivery",
       subtotal: subtotal,
@@ -171,6 +217,25 @@ export default function MobileCheckoutPage() {
 
     try {
       localStorage.setItem("drip_last_order", JSON.stringify(orderPayload));
+      const existingStr = localStorage.getItem("drip_all_orders");
+      const existingOrders = existingStr ? JSON.parse(existingStr) : [];
+      existingOrders.unshift(orderPayload);
+      localStorage.setItem("drip_all_orders", JSON.stringify(existingOrders));
+
+      if (paymentMethod === "card" && selectedSavedCard === "new" && saveCardFlag) {
+        const last4 = cardNumber.slice(-4) || "0000";
+        const type = cardNumber.startsWith("4") ? "Visa" : "Mastercard";
+        addCard({
+          type,
+          last4,
+          expiry: cardExpiry,
+          cardName,
+          isDefault: savedCards.length === 0
+        });
+      }
+      if (paymentMethod === "upi" && selectedSavedUpi === "new" && saveUpiFlag) {
+        addUpi(upiId);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -221,13 +286,35 @@ export default function MobileCheckoutPage() {
   };
 
   const renderErrors = () => {
-    if (formErrors.length === 0) return null;
+    if (formErrors.length === 0 && !paymentError) return null;
     return (
       <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-4 rounded-xl mb-6">
-        <span className="text-xs font-bold text-red-800 dark:text-red-400 block mb-2">Please fix these errors:</span>
-        <ul className="list-disc pl-4 space-y-1 text-xs text-red-700 dark:text-red-300">
-          {formErrors.map((err, idx) => <li key={idx}>{err}</li>)}
-        </ul>
+        <span className="text-xs font-bold text-red-800 dark:text-red-400 block mb-2">
+          {paymentError ? "Payment Failed" : "Please fix these errors:"}
+        </span>
+        {paymentError ? (
+          <p className="text-xs text-red-700 dark:text-red-300 mb-3">{paymentError}</p>
+        ) : (
+          <ul className="list-disc pl-4 space-y-1 text-xs text-red-700 dark:text-red-300">
+            {formErrors.map((err, idx) => <li key={idx}>{err}</li>)}
+          </ul>
+        )}
+        {paymentError && (
+          <div className="flex gap-2">
+            <button 
+              onClick={() => { setPaymentError(null); handlePlaceOrder(); }}
+              className="px-3 py-2 bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95"
+            >
+              Try Again
+            </button>
+            <button 
+              onClick={() => { setPaymentError(null); setStep("payment"); }}
+              className="px-3 py-2 border border-red-200 dark:border-red-900/50 text-red-800 dark:text-red-300 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors active:scale-95"
+            >
+              Change Payment Method
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -341,34 +428,80 @@ export default function MobileCheckoutPage() {
       <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
         {paymentMethod === "card" && (
           <div className="space-y-4">
-            <input 
-              type="text" placeholder="Cardholder Name *" value={cardName} onChange={e => setCardName(e.target.value)}
-              className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
-            />
-            <input 
-              type="text" placeholder="Card Number *" value={cardNumber} onChange={e => setCardNumber(e.target.value)}
-              className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <input 
-                type="text" placeholder="MM/YY *" value={cardExpiry} onChange={e => setCardExpiry(e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
-              />
-              <input 
-                type="password" placeholder="CVV *" value={cardCvv} onChange={e => setCardCvv(e.target.value)} maxLength={4}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
-              />
-            </div>
+            {savedCards.length > 0 && (
+              <div className="space-y-2 mb-4">
+                {savedCards.map(c => (
+                  <label key={c.id} className="flex items-center gap-3 p-3 border border-zinc-200 dark:border-zinc-800 rounded-xl cursor-pointer">
+                    <input type="radio" checked={selectedSavedCard === c.id} onChange={() => setSelectedSavedCard(c.id)} className="w-4 h-4 text-[#6F4E37] focus:ring-[#6F4E37]" />
+                    <span className="text-sm font-bold text-zinc-900 dark:text-white">{c.type} •••• {c.last4}</span>
+                  </label>
+                ))}
+                <label className="flex items-center gap-3 p-3 border border-zinc-200 dark:border-zinc-800 rounded-xl cursor-pointer">
+                  <input type="radio" checked={selectedSavedCard === "new"} onChange={() => setSelectedSavedCard("new")} className="w-4 h-4 text-[#6F4E37] focus:ring-[#6F4E37]" />
+                  <span className="text-sm font-bold text-zinc-900 dark:text-white">Use another card</span>
+                </label>
+              </div>
+            )}
+            
+            {selectedSavedCard === "new" && (
+              <div className="space-y-4">
+                <input 
+                  type="text" placeholder="Cardholder Name *" value={cardName} onChange={e => setCardName(e.target.value)}
+                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
+                />
+                <input 
+                  type="text" placeholder="Card Number *" value={cardNumber} onChange={e => setCardNumber(e.target.value)}
+                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <input 
+                    type="text" placeholder="MM/YY *" value={cardExpiry} onChange={e => setCardExpiry(e.target.value)}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
+                  />
+                  <input 
+                    type="password" placeholder="CVV *" value={cardCvv} onChange={e => setCardCvv(e.target.value)} maxLength={4}
+                    className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
+                  />
+                </div>
+                <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                  <input type="checkbox" checked={saveCardFlag} onChange={e => setSaveCardFlag(e.target.checked)} className="rounded text-[#6F4E37] focus:ring-[#6F4E37]" />
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Save this card for faster checkout</span>
+                </label>
+              </div>
+            )}
           </div>
         )}
 
         {paymentMethod === "upi" && (
           <div className="space-y-2">
-            <input 
-              type="text" placeholder="UPI ID (username@upi) *" value={upiId} onChange={e => setUpiId(e.target.value)}
-              className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
-            />
-            <p className="text-xs text-zinc-500">A payment request will be sent to your UPI app.</p>
+            {savedUpis.length > 0 && (
+              <div className="space-y-2 mb-4">
+                {savedUpis.map(u => (
+                  <label key={u} className="flex items-center gap-3 p-3 border border-zinc-200 dark:border-zinc-800 rounded-xl cursor-pointer">
+                    <input type="radio" checked={selectedSavedUpi === u} onChange={() => setSelectedSavedUpi(u)} className="w-4 h-4 text-[#6F4E37] focus:ring-[#6F4E37]" />
+                    <span className="text-sm font-bold text-zinc-900 dark:text-white">{u}</span>
+                  </label>
+                ))}
+                <label className="flex items-center gap-3 p-3 border border-zinc-200 dark:border-zinc-800 rounded-xl cursor-pointer">
+                  <input type="radio" checked={selectedSavedUpi === "new"} onChange={() => setSelectedSavedUpi("new")} className="w-4 h-4 text-[#6F4E37] focus:ring-[#6F4E37]" />
+                  <span className="text-sm font-bold text-zinc-900 dark:text-white">Use another UPI ID</span>
+                </label>
+              </div>
+            )}
+
+            {selectedSavedUpi === "new" && (
+              <>
+                <input 
+                  type="text" placeholder="UPI ID (username@upi) *" value={upiId} onChange={e => setUpiId(e.target.value)}
+                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm focus:border-[#6F4E37] outline-none"
+                />
+                <p className="text-xs text-zinc-500">A payment request will be sent to your UPI app.</p>
+                <label className="flex items-center gap-2 mt-2 cursor-pointer">
+                  <input type="checkbox" checked={saveUpiFlag} onChange={e => setSaveUpiFlag(e.target.checked)} className="rounded text-[#6F4E37] focus:ring-[#6F4E37]" />
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400">Save this UPI for faster checkout</span>
+                </label>
+              </>
+            )}
           </div>
         )}
 
@@ -491,9 +624,18 @@ export default function MobileCheckoutPage() {
           {step === "review" ? (
             <button
               onClick={handlePlaceOrder}
-              className="w-full bg-[#6F4E37] text-white py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider shadow-lg shadow-[#6F4E37]/20 active:scale-95 transition-transform flex items-center justify-center gap-2"
+              disabled={isProcessing}
+              className={`w-full py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider shadow-lg transition-all flex items-center justify-center gap-2 ${
+                isProcessing 
+                  ? "bg-zinc-400 dark:bg-zinc-600 text-white cursor-not-allowed" 
+                  : "bg-[#6F4E37] text-white shadow-[#6F4E37]/20 active:scale-95"
+              }`}
             >
-              <ShieldCheck className="w-4 h-4" /> Place Order (₹{totalAmount.toLocaleString()})
+              {isProcessing ? (
+                <>Processing Payment...</>
+              ) : (
+                <><ShieldCheck className="w-4 h-4" /> Place Order (₹{totalAmount.toLocaleString()})</>
+              )}
             </button>
           ) : (
             <button

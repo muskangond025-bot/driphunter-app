@@ -56,24 +56,22 @@ const AddressContext = createContext<AddressContextType | undefined>(undefined);
 
 export const AddressProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [addresses, setAddresses] = useState<Address[]>(defaultAddresses);
-  const [activeAddressId, setActiveAddressId] = useState<number | null>(1);
+  const [activeAddressId, setActiveAddressId] = useState<number | null>(null);
 
   // Load from local storage
   useEffect(() => {
     try {
-      const storedAddresses = localStorage.getItem("drip_addresses");
-      const storedActiveId = localStorage.getItem("drip_active_address");
+      const storedAddresses = localStorage.getItem("drip_addresses_v2");
+      const storedActiveId = localStorage.getItem("drip_active_address_v2");
       
       if (storedAddresses) {
         setAddresses(JSON.parse(storedAddresses));
       }
       
-      if (storedActiveId) {
+      if (storedActiveId && storedActiveId !== "null") {
         setActiveAddressId(Number(storedActiveId));
-      } else if (storedAddresses) {
-        const parsed = JSON.parse(storedAddresses);
-        if (parsed.length > 0) setActiveAddressId(parsed[0].id);
-      }
+      } 
+      // Do not auto-select the first address to allow 'Select Delivery Location' to display
     } catch (e) {
       console.error("Failed to load addresses from local storage", e);
     }
@@ -82,9 +80,11 @@ export const AddressProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Save to local storage
   useEffect(() => {
     try {
-      localStorage.setItem("drip_addresses", JSON.stringify(addresses));
+      localStorage.setItem("drip_addresses_v2", JSON.stringify(addresses));
       if (activeAddressId !== null) {
-        localStorage.setItem("drip_active_address", activeAddressId.toString());
+        localStorage.setItem("drip_active_address_v2", activeAddressId.toString());
+      } else {
+        localStorage.removeItem("drip_active_address_v2");
       }
     } catch (e) {
       console.error("Failed to save addresses to local storage", e);

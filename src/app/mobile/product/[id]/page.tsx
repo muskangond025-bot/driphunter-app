@@ -37,10 +37,10 @@ import {
   tryOnWardrobe,
   stylingItems,
   similarProducts,
-  customerAlsoLiked,
   recentlyViewed,
   mockReviews
 } from "@/data/productDetailsMock";
+import { MOCK_PRODUCTS, LIMITED_DROPS, DEAL_OF_THE_DAY } from "@/data/mockData";
 
 export default function MobileProductDetailPage() {
   const params = useParams();
@@ -53,9 +53,48 @@ export default function MobileProductDetailPage() {
 
   // Derived state
   const slug = params?.id as string || "";
-  const dynamicName = slug ? slug.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : productDetail.name;
-  const isLiked = isInWishlist(productDetail.id);
-  const defaultAddress = addresses.find(a => a.id === activeAddressId) || addresses[0];
+
+  const foundProduct = useMemo(() => {
+    if (!slug) return null;
+    return MOCK_PRODUCTS.find(p => p.id === slug) || 
+           LIMITED_DROPS.find(p => p.id === slug) || 
+           (DEAL_OF_THE_DAY.product.id === slug ? DEAL_OF_THE_DAY.product : null);
+  }, [slug]);
+
+  if (!foundProduct) {
+    return (
+      <AppPageLayout hasBottomNav={false}>
+        <AppHeader 
+          variant="contextual" 
+          title="Not Found"
+          fallbackUrl="/mobile/explore"
+        />
+        <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center">
+          <div className="w-20 h-20 bg-zinc-50 dark:bg-zinc-900/50 rounded-full flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800">
+            <ShoppingBag className="w-8 h-8 text-zinc-300 dark:text-zinc-600" />
+          </div>
+          <h1 className="text-2xl font-black font-sans uppercase tracking-tight text-zinc-900 dark:text-white mb-3">
+            Product Not Found
+          </h1>
+          <p className="text-sm font-sans text-zinc-500 dark:text-zinc-400 mb-8 max-w-[280px]">
+            The product you are looking for might have been removed, sold out, or the link is invalid.
+          </p>
+          <button
+            onClick={() => router.push("/mobile/explore")}
+            className="w-full max-w-[240px] bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 h-14 rounded-2xl font-bold font-mono uppercase tracking-widest text-xs active:scale-95 transition-transform"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </AppPageLayout>
+    );
+  }
+
+  const dynamicName = (foundProduct as any).title || (foundProduct as any).name || productDetail.name;
+  const productPrice = foundProduct.price || productDetail.price;
+  
+  const isLiked = isInWishlist(slug);
+  const defaultAddress = addresses.find(a => a.id === activeAddressId);
   const addressText = defaultAddress 
     ? `${defaultAddress.type.toUpperCase()} ${defaultAddress.address}, ${defaultAddress.city}, ${defaultAddress.state}...`
     : "Select Delivery Address";
@@ -82,8 +121,9 @@ export default function MobileProductDetailPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const activeStreamRef = useRef<MediaStream | null>(null);
 
-  // Cart Sheet State
+  // Cart/Share Sheet State
   const [isSizeSheetOpen, setIsSizeSheetOpen] = useState(false);
+  const [isShareSheetOpen, setIsShareSheetOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   // Update active image index based on scroll position
@@ -182,19 +222,37 @@ export default function MobileProductDetailPage() {
 
   // Actions
   const handleShare = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: dynamicName,
-          text: productDetail.description,
-          url: window.location.href,
-        });
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        alert('Link copied to clipboard!');
+    const shareUrl = window.location.origin + `/mobile/product/${slug}`;
+    const shareData = {
+      title: dynamicName,
+      text: "Check out this product on DripHunter.",
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          setToastMsg("Unable to share. Please try again.");
+          setTimeout(() => setToastMsg(null), 3000);
+        }
       }
+    } else {
+      setIsShareSheetOpen(true);
+    }
+  };
+
+  const handleCopyLink = async () => {
+    const shareUrl = window.location.origin + `/mobile/product/${slug}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setIsShareSheetOpen(false);
+      setToastMsg("Product link copied");
+      setTimeout(() => setToastMsg(null), 3000);
     } catch (err) {
-      console.error('Error sharing:', err);
+      setToastMsg("Failed to copy link");
+      setTimeout(() => setToastMsg(null), 3000);
     }
   };
 
@@ -206,11 +264,11 @@ export default function MobileProductDetailPage() {
     setSelectedSize(size);
     addToCart(
       {
-        id: productDetail.id,
+        id: slug,
         name: dynamicName,
-        price: productDetail.price,
+        price: productPrice,
         image: currentColor.images[0],
-        brand: productDetail.brand,
+        brand: (foundProduct as any).brand || productDetail.brand,
         size: size,
         color: currentColor.name,
       },
@@ -222,18 +280,29 @@ export default function MobileProductDetailPage() {
   };
 
   const handleBuyNow = () => {
-    confirmAddToCart(selectedSize);
-    setTimeout(() => router.push("/checkout"), 50); // Match desktop logic behavior
+    addToCart(
+      {
+        id: slug,
+        name: dynamicName,
+        price: productPrice,
+        image: currentColor.images[0],
+        brand: (foundProduct as any).brand || productDetail.brand,
+        size: selectedSize,
+        color: currentColor.name,
+      },
+      quantity
+    );
+    router.push("/mobile/checkout");
   };
 
   const wishlistAction = (
     <button 
       onClick={() => toggleWishlist({
-        id: productDetail.id,
+        id: slug,
         name: dynamicName,
-        price: `₹${productDetail.price.toLocaleString()}`,
+        price: `₹${productPrice.toLocaleString()}`,
         image: currentColor.images[0],
-        brand: productDetail.brand
+        brand: (foundProduct as any).brand || productDetail.brand
       })}
       className="p-2.5 transition-transform active:scale-95 flex items-center justify-center"
       aria-label="Add to wishlist"
@@ -261,7 +330,7 @@ export default function MobileProductDetailPage() {
             <span className="text-xs text-zinc-500">Search for products...</span>
           </div>
         }
-        fallbackUrl="/mobile"
+        fallbackUrl="/mobile/explore"
         rightAction={
           <button onClick={() => router.push('/mobile/cart')} className="p-2 transition-transform active:scale-95 text-zinc-700 dark:text-zinc-200 relative">
             <ShoppingBag className="w-6 h-6" />
@@ -324,7 +393,7 @@ export default function MobileProductDetailPage() {
         {/* 2. PRODUCT IDENTITY & PRICE */}
         <div className="px-5 pt-6 pb-4">
           <span className="text-[10px] text-zinc-500 font-mono tracking-[0.2em] uppercase font-bold block mb-1">
-            {productDetail.brand} Motorsport
+            {(foundProduct as any).brand || productDetail.brand} Motorsport
           </span>
           <h1 className="text-xl sm:text-2xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair uppercase leading-snug">
             {dynamicName.split(" ").slice(0, 3).join(" ")} <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">{dynamicName.split(" ").slice(3).join(" ")}</span>
@@ -337,20 +406,20 @@ export default function MobileProductDetailPage() {
               ))}
             </div>
             <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 font-mono">
-              {productDetail.rating}
+              {(foundProduct as any).rating || productDetail.rating}
             </span>
             <span className="text-zinc-300 dark:text-zinc-700">|</span>
             <span className="text-[10px] font-bold text-[#6F4E37] dark:text-[#E6C280] font-mono uppercase tracking-wider">
-              {productDetail.reviewsCount} reviews
+              {(foundProduct as any).reviewsCount || productDetail.reviewsCount} reviews
             </span>
           </div>
 
           <div className="flex items-baseline gap-3 mt-4">
             <strong className="text-2xl font-bold text-zinc-950 dark:text-zinc-50 font-mono">
-              ₹{productDetail.price.toLocaleString()}
+              ₹{productPrice.toLocaleString()}
             </strong>
             <span className="text-sm font-bold text-zinc-400 dark:text-zinc-500 line-through font-mono">
-              ₹{productDetail.originalPrice.toLocaleString()}
+              ₹{((foundProduct as any).originalPrice || productDetail.originalPrice).toLocaleString()}
             </span>
             <span className="text-[9px] font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 rounded-md px-2 py-0.5 uppercase tracking-widest font-mono">
               46% OFF
@@ -518,6 +587,13 @@ export default function MobileProductDetailPage() {
               </div>
             ))}
           </div>
+
+          <button 
+             onClick={() => router.push(`/mobile/reviews/write?orderId=${slug}`)}
+             className="w-full mt-4 py-3.5 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-bold font-mono uppercase tracking-widest text-zinc-950 dark:text-white bg-white dark:bg-zinc-950 active:scale-95 transition-transform shadow-sm"
+          >
+             Write a Review
+          </button>
         </div>
 
         <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
@@ -570,7 +646,7 @@ export default function MobileProductDetailPage() {
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-bold text-zinc-900 dark:text-white line-clamp-1">{dynamicName}</span>
-                <span className="text-xs text-zinc-500 mt-0.5">₹{productDetail.price.toLocaleString()}</span>
+                <span className="text-xs text-zinc-500 mt-0.5">₹{productPrice.toLocaleString()}</span>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-3 mb-4">
@@ -592,13 +668,41 @@ export default function MobileProductDetailPage() {
         </SheetContent>
       </Sheet>
 
+      {/* ─── SHARE FALLBACK SHEET ─── */}
+      <Sheet open={isShareSheetOpen} onOpenChange={setIsShareSheetOpen}>
+        <SheetContent side="bottom" className="rounded-t-3xl px-0 pb-8 max-h-[85vh] overflow-y-auto">
+          <SheetHeader className="px-5 mb-4 text-left flex flex-row items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-4">
+            <SheetTitle className="font-sans font-bold text-lg text-zinc-900 dark:text-white uppercase tracking-widest text-xs">
+              Share This Product
+            </SheetTitle>
+            <SheetClose className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus:outline-none">
+              <X className="w-5 h-5 text-zinc-500" />
+            </SheetClose>
+          </SheetHeader>
+          <div className="px-5 space-y-3">
+            <button
+              onClick={handleCopyLink}
+              className="w-full flex items-center justify-center h-14 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl font-bold font-mono uppercase tracking-widest text-xs active:scale-95 transition-transform"
+            >
+              Copy Link
+            </button>
+            <button
+              onClick={() => setIsShareSheetOpen(false)}
+              className="w-full flex items-center justify-center h-14 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-2xl font-bold font-mono uppercase tracking-widest text-xs active:scale-95 transition-transform border border-zinc-200 dark:border-zinc-800"
+            >
+              Cancel
+            </button>
+          </div>
+        </SheetContent>
+      </Sheet>
+
       {/* ─── STICKY PURCHASE BAR ─── */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-5 pt-3 pb-[calc(12px+env(safe-area-inset-bottom))] shadow-[0_-10px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
         <div className="flex flex-col gap-3">
           {/* Quantity (Compact) */}
           <div className="flex items-center justify-between">
             <span className="text-sm font-bold text-zinc-900 dark:text-white font-mono">
-              ₹{(productDetail.price * quantity).toLocaleString()}
+              ₹{(productPrice * quantity).toLocaleString()}
             </span>
             <div className="flex items-center gap-4 bg-zinc-100 dark:bg-zinc-800 rounded-full px-1 py-1">
               <button

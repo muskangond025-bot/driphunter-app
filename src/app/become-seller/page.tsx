@@ -3,9 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import SellerNavbar from "@/components/layout/SellerNavbar";
-import Footer from "@/components/layout/Footer";
-import SearchOverlay from "@/components/layout/SearchOverlay";
+import AppHeader from "@/components/app-shell/AppHeader";
+
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
 import {
@@ -28,7 +27,7 @@ import {
 } from "lucide-react";
 
 export default function BecomeSellerPage() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [containerWidth, setContainerWidth] = useState(800);
@@ -307,13 +306,7 @@ export default function BecomeSellerPage() {
         </div>
       )}
 
-      {/* Navbar & Search */}
-      <SellerNavbar />
-
-      <SearchOverlay
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+      <AppHeader title="Become a Seller" variant="contextual" showActions={true} />
 
       {/* ─── SECTION 1: PREMIUM EDITORIAL HERO ─── */}
       <section
@@ -932,8 +925,7 @@ export default function BecomeSellerPage() {
 
       </main>
 
-      {/* Footer */}
-      <Footer />
+
     </div>
   );
 }

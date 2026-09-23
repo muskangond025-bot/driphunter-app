@@ -2,19 +2,17 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight, User } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import SearchOverlay from "@/components/layout/SearchOverlay";
+import { useRouter } from "next/navigation";
+import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight, User, X, ArrowLeft } from "lucide-react";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +37,6 @@ export default function SignUpPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-[#0a0a0a] text-foreground">
-      <Navbar onSearchClick={() => setIsSearchOpen(true)} />
       
       <main className="flex-grow relative flex items-center justify-center overflow-hidden select-none py-24 px-4">
         
@@ -59,12 +56,29 @@ export default function SignUpPage() {
         </div>
 
         {/* ─── GLASSMORPHISM FORM CONTAINER ─── */}
-        <div className="relative z-10 w-full max-w-[480px] animate-fade-in">
+        <div className="relative z-10 w-full max-w-[480px] animate-fade-in mt-16 sm:mt-0">
           
           {/* Floating Glass Panel */}
-          <div className="bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-[0_0_80px_rgba(0,0,0,0.05)] dark:shadow-[0_0_80px_rgba(0,0,0,0.4)]">
+          <div className="bg-white/70 dark:bg-black/40 backdrop-blur-2xl border border-zinc-200/50 dark:border-white/10 rounded-[2.5rem] p-8 sm:p-12 shadow-[0_0_80px_rgba(0,0,0,0.05)] dark:shadow-[0_0_80px_rgba(0,0,0,0.4)] relative">
             
-            <div className="space-y-2 mb-10 text-center">
+            {/* ─── NAVIGATION BUTTONS ─── */}
+            <div className="absolute top-6 inset-x-6 z-20 flex justify-between items-center">
+              <button 
+                onClick={() => router.push("/login")}
+                className="p-2 rounded-full text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              
+              <button 
+                onClick={() => router.push("/")}
+                className="p-2 rounded-full text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2 mb-12 text-center">
               <div className="w-12 h-12 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                 <User className="w-5 h-5" />
               </div>
@@ -209,9 +223,6 @@ export default function SignUpPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
-      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 import { MapPin, ChevronDown, Search, TicketPercent, CheckCircle2, Mic, Camera, Plus } from "lucide-react";
 import { useAddress } from "@/context/AddressContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -11,9 +12,10 @@ import DeliveryLocationSheet from "./DeliveryLocationSheet";
 export default function MobileHomeHeader() {
   const router = useRouter();
   const { addresses, activeAddressId, setActiveAddress } = useAddress();
+  const { t } = useLanguage();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const activeAddress = addresses.find((a) => a.id === activeAddressId) || addresses[0];
+  const activeAddress = addresses.find((a) => a.id === activeAddressId);
 
   return (
     <div className="w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md pt-[env(safe-area-inset-top)] pb-4 px-4 sm:px-5 z-40 sticky top-0 rounded-b-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.2)] border-b border-zinc-100 dark:border-zinc-900/80">
@@ -50,7 +52,7 @@ export default function MobileHomeHeader() {
         >
           <Search className="w-4 h-4 sm:w-5 sm:h-5 text-[#6F4E37] dark:text-[#E6C280] shrink-0 pointer-events-none" />
           <span className="text-xs sm:text-[13px] text-zinc-400 dark:text-zinc-500 font-medium flex-1 truncate pointer-events-none">
-            Search for sneakers, streetwear...
+            {t("search")}
           </span>
           <div className="flex items-center gap-3 border-l border-zinc-200 dark:border-zinc-700 pl-3 shrink-0">
             <button 

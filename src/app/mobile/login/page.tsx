@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ShieldCheck, ArrowRight } from "lucide-react";
 import AppHeader from "@/components/app-shell/AppHeader";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
 
 export default function MobileLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -16,26 +18,23 @@ export default function MobileLoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError("Please fill in all fields.");
+      setError("Incorrect email/mobile or password. Please try again.");
       return;
     }
     setError("");
     setIsSubmitting(true);
     
-    // Simulate user login
-    localStorage.setItem("drip_user", JSON.stringify({ name: email.split("@")[0], email }));
-
     setTimeout(() => {
-      window.location.href = "/mobile/account";
+      setIsSubmitting(false);
+      setError("Backend Integration Required for Authentication.");
     }, 1000);
   };
 
   const handleSocialLogin = (platform: string) => {
     setIsSubmitting(true);
-    localStorage.setItem("drip_user", JSON.stringify({ name: `${platform} User`, email: `user@${platform.toLowerCase()}.com` }));
-
     setTimeout(() => {
-      window.location.href = "/mobile/account";
+      setIsSubmitting(false);
+      setError(`Backend Integration Required for ${platform} Login.`);
     }, 1000);
   };
 
@@ -64,7 +63,7 @@ export default function MobileLoginPage() {
           <div className="space-y-4">
             <div className="relative group">
               <input
-                type="email"
+                type="text"
                 required
                 placeholder=" "
                 value={email}
@@ -72,12 +71,12 @@ export default function MobileLoginPage() {
                 className="peer w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 focus:border-[#6F4E37] dark:focus:border-zinc-500 rounded-2xl px-5 py-4 text-sm font-sans font-medium text-zinc-900 dark:text-white outline-none transition-all"
               />
               <label className="absolute left-5 top-4 text-xs font-mono font-bold uppercase tracking-[0.2em] text-zinc-400 peer-focus:-translate-y-8 peer-focus:text-[9px] peer-focus:text-zinc-900 dark:peer-focus:text-white peer-valid:-translate-y-8 peer-valid:text-[9px] transition-all duration-300 pointer-events-none">
-                Email Address
+                Email or Mobile Number
               </label>
               <Mail className="absolute right-5 top-4 w-4 h-4 text-zinc-400" />
             </div>
 
-            <div className="relative group mt-2">
+            <div className="relative group mt-2 animate-in fade-in zoom-in-95 duration-200">
               <input
                 type={showPassword ? "text" : "password"}
                 required
@@ -97,16 +96,44 @@ export default function MobileLoginPage() {
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+            
+            <div className="flex justify-end pt-1">
+              <Link
+                href="/mobile/forgot-password"
+                className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-bold uppercase tracking-widest transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-4 rounded-xl font-bold active:scale-[0.98] transition-transform flex justify-center items-center gap-2 mt-2"
+            className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 py-4 rounded-xl font-bold active:scale-[0.98] transition-transform flex justify-center items-center gap-2 mt-2 shadow-xl shadow-zinc-200 dark:shadow-none"
           >
-            {isSubmitting ? "Authenticating..." : "Sign In with Email"}
+            {isSubmitting ? "Authenticating..." : "SIGN IN"}
           </button>
         </form>
+
+        <div className="mt-8 space-y-4">
+          <div className="relative flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+            </div>
+            <span className="relative z-10 px-4 bg-white dark:bg-zinc-950 text-[9px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+              OR
+            </span>
+          </div>
+          
+          <Link
+            href="/mobile/otp-login"
+            className="w-full bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-white py-4 rounded-xl font-bold active:scale-[0.98] transition-transform flex justify-center items-center gap-2 border border-zinc-200 dark:border-zinc-800 font-mono tracking-widest uppercase text-[11px]"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            SIGN IN WITH OTP
+          </Link>
+        </div>
 
         <div className="mt-8 space-y-4">
           <div className="relative flex items-center justify-center">

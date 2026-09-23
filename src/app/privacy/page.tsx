@@ -45,6 +45,8 @@ import {
 
 export default function PrivacyPolicyPage() {
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [openSections, setOpenSections] = useState<string[]>([]);
+  const toggleSection = (id: string) => setOpenSections(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
   const [searchTerm, setSearchTerm] = useState("");
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -129,7 +131,7 @@ export default function PrivacyPolicyPage() {
 
   return (
     <div ref={containerRef}>
-      <StaticContentLayout>
+      <StaticContentLayout title="Privacy Policy">
 
       {/* ─── 1. BRIGHT LUXURY E-COMMERCE & CULTURE-CIRCLE HERO HEADER ─── */}
       <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F4EFEA] via-[#FAF8F5] to-[#FAF8F5] border-b border-stone-200/80 pt-28 pb-14 px-4 sm:px-8 lg:px-12 xl:px-16">
@@ -365,7 +367,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("intake") && (
           <section id="intake" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("intake")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   01
@@ -375,19 +377,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 01 // E-COMMERCE DATA INTAKE
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    1. Information We Collect
+                    Information We Collect
                   </h2>
                 </div>
               </div>
               
               <button
-                onClick={() => handleCopyLink("intake")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("intake"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "intake" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "intake" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("intake") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("intake") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             <p className="text-xs sm:text-sm text-zinc-600 font-sans max-w-3xl leading-relaxed">
               In running DripHunter&apos;s e-commerce marketplace and Culture-Circle verified drops, we collect specific data to authenticate sneaker releases, handle doorstep deliveries, and manage consignment payouts.
@@ -473,6 +477,7 @@ export default function PrivacyPolicyPage() {
               </div>
 
             </div>
+            </div>
           </section>
         )}
 
@@ -481,7 +486,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("usage") && (
           <section id="usage" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("usage")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   02
@@ -491,19 +496,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 02 // E-COMMERCE FULFILLMENT &amp; INTELLIGENCE
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    2. How We Use Information
+                    How We Use Information
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("usage")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("usage"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "usage" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "usage" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("usage") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("usage") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             {/* 5-Step E-Commerce Visual Pipeline Cards */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-3.5">
@@ -557,6 +564,7 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </div>
+            </div>
           </section>
         )}
 
@@ -565,7 +573,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("cookies") && (
           <section id="cookies" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("cookies")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   03
@@ -575,19 +583,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 03 // SHOPPING CART &amp; COOKIES
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    3. Cookies &amp; Tracking Technologies
+                    Cookies &amp; Tracking Technologies
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("cookies")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("cookies"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "cookies" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "cookies" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("cookies") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("cookies") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             {/* Bright Clean Structured Text Cards for Section 3 */}
             <div className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200/90 shadow-sm space-y-6">
@@ -674,6 +684,7 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </div>
+            </div>
           </section>
         )}
 
@@ -682,7 +693,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("payments") && (
           <section id="payments" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("payments")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   04
@@ -692,19 +703,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 04 // ESCROW &amp; FINANCIAL CHECKOUT
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    4. Payments &amp; Escrow
+                    Payments &amp; Escrow
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("payments")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("payments"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "payments" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "payments" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("payments") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("payments") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               
@@ -748,6 +761,7 @@ export default function PrivacyPolicyPage() {
               </div>
 
             </div>
+            </div>
           </section>
         )}
 
@@ -756,7 +770,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("security") && (
           <section id="security" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("security")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   05
@@ -766,19 +780,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 05 // VAULT DEFENSE &amp; ENCRYPTION
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    5. Data Security Architecture
+                    Data Security Architecture
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("security")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("security"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "security" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "security" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("security") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("security") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-5 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-2">
@@ -811,6 +827,7 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </div>
+            </div>
           </section>
         )}
 
@@ -819,7 +836,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("thirdparty") && (
           <section id="thirdparty" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("thirdparty")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   06
@@ -829,19 +846,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 06 // E-COMMERCE SERVICE INTEGRATIONS
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    6. Third-Party Services
+                    Third-Party Services
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("thirdparty")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("thirdparty"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "thirdparty" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "thirdparty" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("thirdparty") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("thirdparty") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             <div className="space-y-3">
               <div className="p-4 rounded-2xl bg-white border border-stone-200 shadow-sm flex items-start gap-4">
@@ -882,6 +901,7 @@ export default function PrivacyPolicyPage() {
                 </div>
               </div>
             </div>
+            </div>
           </section>
         )}
 
@@ -890,7 +910,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("rights") && (
           <section id="rights" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("rights")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   07
@@ -900,19 +920,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 07 // STATUTORY USER RIGHTS
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    7. User Rights &amp; Data Sovereignty
+                    User Rights &amp; Data Sovereignty
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("rights")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("rights"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "rights" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "rights" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("rights") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("rights") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             {/* Clean Structured Text Cards for Section 7 */}
             <div className="p-6 sm:p-7 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-6">
@@ -999,6 +1021,7 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </div>
+            </div>
           </section>
         )}
 
@@ -1007,7 +1030,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("retention") && (
           <section id="retention" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("retention")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   08
@@ -1017,19 +1040,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 08 // E-COMMERCE RETENTION LIFECYCLE
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    8. Data Retention Timeline
+                    Data Retention Timeline
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("retention")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("retention"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "retention" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "retention" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("retention") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("retention") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             {/* Retention Step Ladder */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1063,6 +1088,7 @@ export default function PrivacyPolicyPage() {
                 </p>
               </div>
             </div>
+            </div>
           </section>
         )}
 
@@ -1071,7 +1097,7 @@ export default function PrivacyPolicyPage() {
         {/* ========================================================================= */}
         {shouldShowSection("contact") && (
           <section id="contact" className="space-y-5 text-left scroll-mt-36">
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200">
+            <div onClick={() => toggleSection("contact")} className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-stone-200 cursor-pointer group">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[#6F4E37]/10 text-[#6F4E37] flex items-center justify-center font-mono font-bold text-sm">
                   09
@@ -1081,19 +1107,21 @@ export default function PrivacyPolicyPage() {
                     ARTICLE 09 // GRIEVANCE &amp; LEGAL DESK
                   </span>
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-[1.05] uppercase">
-                    9. Contact Us &amp; Grievance Officer
+                    Contact Us &amp; Grievance Officer
                   </h2>
                 </div>
               </div>
 
               <button
-                onClick={() => handleCopyLink("contact")}
+                onClick={(e) => { e.stopPropagation(); handleCopyLink("contact"); }}
                 className="text-zinc-600 hover:text-[#6F4E37] transition-colors p-2 rounded-xl bg-white border border-stone-200 cursor-pointer flex items-center gap-1.5 text-xs font-mono shadow-2xs"
               >
                 {copiedSection === "contact" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSection === "contact" ? "Link Copied" : "Share"}</span>
               </button>
+              <ChevronDown className={`w-5 h-5 text-zinc-400 transition-transform duration-300 ${openSections.includes("contact") ? "rotate-180" : ""}`} />
             </div>
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden space-y-5 ${openSections.includes("contact") ? "max-h-[5000px] opacity-100 mt-5" : "max-h-0 opacity-0 m-0"}`}>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               
@@ -1132,6 +1160,7 @@ export default function PrivacyPolicyPage() {
                 </div>
               </div>
 
+            </div>
             </div>
           </section>
         )}

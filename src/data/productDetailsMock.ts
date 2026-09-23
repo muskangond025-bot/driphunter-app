@@ -366,3 +366,10 @@ export const mockReviews = [
     comment: "I own several pieces from this brand and this one might be the best yet. The drape is perfect and it feels very breathable despite being heavyweight.",
   }
 ];
+
+export const styleWithUsMock = [
+  { id: 'swu1', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80', user: '@streetwear_king', caption: 'Layered up for the winter drops.' },
+  { id: 'swu2', image: 'https://images.unsplash.com/photo-1550614000-4b95d4669e6b?w=400&q=80', user: '@drip_queen99', caption: 'Minimalist vibes with the new essentials.' },
+  { id: 'swu3', image: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&q=80', user: '@urban_explorer', caption: 'City lights and cozy fits.' },
+  { id: 'swu4', image: 'https://images.unsplash.com/photo-1509631179647-0c5000508c5e?w=400&q=80', user: '@hype_beast_daily', caption: 'Cannot go wrong with this colorway.' }
+];

@@ -353,9 +353,12 @@ export default function CartPage() {
               </div>
 
               {/* Deliver to Section */}
-              {addresses.length > 0 && activeAddressId ? (
-                (() => {
-                  const activeAddr = addresses.find((a) => a.id === activeAddressId) || addresses[0];
+              {(() => {
+                const activeAddr = addresses.length > 0 && activeAddressId 
+                  ? addresses.find((a) => a.id === activeAddressId) 
+                  : undefined;
+                  
+                if (activeAddr) {
                   return (
                     <Surface className="rounded-[28px] max-md:rounded-none max-md:border-x-0 p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div className="space-y-1 overflow-hidden w-full">
@@ -375,21 +378,23 @@ export default function CartPage() {
                       </button>
                     </Surface>
                   );
-                })()
-              ) : (
-                <Surface className="rounded-[28px] p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400 font-sans">
-                    No delivery address selected.
-                  </div>
-                  <Button 
-                    variant="drip"
-                    onClick={() => { setIsAddressDrawerOpen(true); handleOpenAddAddress(); }}
-                    className="text-[10px] px-5 py-2.5 rounded-xl shadow-xs shrink-0"
-                  >
-                    Add Address
-                  </Button>
-                </Surface>
-              )}
+                }
+                
+                return (
+                  <Surface className="rounded-[28px] p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="space-y-1 text-sm text-zinc-600 dark:text-zinc-400 font-sans">
+                      No delivery address selected.
+                    </div>
+                    <Button 
+                      variant="drip"
+                      onClick={() => { setIsAddressDrawerOpen(true); handleOpenAddAddress(); }}
+                      className="text-[10px] px-5 py-2.5 rounded-xl shadow-xs shrink-0"
+                    >
+                      Add Address
+                    </Button>
+                  </Surface>
+                );
+              })()}
 
 
 

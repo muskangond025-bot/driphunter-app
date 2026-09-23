@@ -198,12 +198,12 @@ export default function ProductCard({
         {/* Quick Size Flyout Overlay (Culture-Circle Interactive Pill) */}
         {!hideQuickSizes && inStock && (
           <div className="absolute bottom-2.5 inset-x-2.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-stone-200/90 dark:border-white/10 rounded-2xl p-2.5 shadow-xl opacity-0 translate-y-3 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out z-20 flex flex-col gap-1.5">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[8px] font-mono tracking-widest text-[#6F4E37] dark:text-[#E6C280] uppercase font-bold">
-                Select Size
+            <div className="flex items-center justify-between px-1 mb-1">
+              <span className="text-[8px] font-mono tracking-widest text-[#6F4E37] dark:text-[#E6C280] uppercase font-bold shrink-0">
+                SIZE
               </span>
-              <span className="text-[8px] font-mono text-zinc-500 dark:text-zinc-400 font-semibold">
-                {selectedSize} • {selectedColor}
+              <span className="text-[8px] font-mono text-zinc-500 dark:text-zinc-400 font-semibold truncate ml-2">
+                {selectedColor}
               </span>
             </div>
             <div className="flex gap-1 w-full justify-center">

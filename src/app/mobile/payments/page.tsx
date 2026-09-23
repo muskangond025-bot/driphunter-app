@@ -4,12 +4,10 @@ import React, { useState } from "react";
 import AppHeader from "@/components/app-shell/AppHeader";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
 import { CreditCard, Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { usePayment } from "@/context/PaymentContext";
 
 export default function MobilePaymentsPage() {
-  const [cards, setCards] = useState([
-    { id: "1", type: "Visa", last4: "4242", expiry: "12/28", isDefault: true },
-    { id: "2", type: "Mastercard", last4: "8899", expiry: "08/26", isDefault: false }
-  ]);
+  const { savedCards, addCard, removeCard, setDefaultCard } = usePayment();
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   
@@ -25,12 +23,12 @@ export default function MobilePaymentsPage() {
   };
 
   const handleRemove = (id: string) => {
-    setCards(cards.filter(c => c.id !== id));
+    removeCard(id);
     triggerToast("Payment method removed");
   };
 
   const handleSetDefault = (id: string) => {
-    setCards(cards.map(c => ({ ...c, isDefault: c.id === id })));
+    setDefaultCard(id);
     triggerToast("Default payment method updated");
   };
 
@@ -44,15 +42,14 @@ export default function MobilePaymentsPage() {
     const last4 = newCardNumber.slice(-4) || "0000";
     const type = newCardNumber.startsWith("4") ? "Visa" : "Mastercard"; // simple mock logic
     
-    const newCard = {
-      id: Date.now().toString(),
+    addCard({
       type,
       last4,
       expiry: newCardExpiry,
-      isDefault: cards.length === 0
-    };
+      cardName: newCardName,
+      isDefault: false
+    });
     
-    setCards([...cards, newCard]);
     setShowAddForm(false);
     triggerToast("Card added successfully");
     
@@ -80,7 +77,7 @@ export default function MobilePaymentsPage() {
       )}
 
       <div className="p-4 flex flex-col gap-4 pb-24">
-        {cards.length === 0 ? (
+        {savedCards.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-4">
               <CreditCard className="w-8 h-8 text-zinc-300 dark:text-zinc-700" />
@@ -89,7 +86,7 @@ export default function MobilePaymentsPage() {
             <p className="text-xs text-zinc-500">Add a payment method for faster checkout.</p>
           </div>
         ) : (
-          cards.map(card => (
+          savedCards.map(card => (
             <div 
               key={card.id} 
               className={`bg-white dark:bg-zinc-900 rounded-2xl p-4 border transition-colors ${

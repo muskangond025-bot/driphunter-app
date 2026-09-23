@@ -23,20 +23,17 @@ export default function MobileSignupPage() {
     setError("");
     setIsSubmitting(true);
     
-    // Simulate user signup
-    localStorage.setItem("drip_user", JSON.stringify({ name, email }));
-
     setTimeout(() => {
-      window.location.href = "/mobile/account";
+      setIsSubmitting(false);
+      setError("Backend Integration Required for Signup.");
     }, 1000);
   };
 
   const handleSocialLogin = (platform: string) => {
     setIsSubmitting(true);
-    localStorage.setItem("drip_user", JSON.stringify({ name: `${platform} User`, email: `user@${platform.toLowerCase()}.com` }));
-
     setTimeout(() => {
-      window.location.href = "/mobile/account";
+      setIsSubmitting(false);
+      setError(`Backend Integration Required for ${platform} Signup.`);
     }, 1000);
   };
 

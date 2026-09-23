@@ -1,22 +1,21 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import SearchOverlay from "@/components/layout/SearchOverlay";
+import AppHeader from "@/components/app-shell/AppHeader";
 
 interface StaticContentLayoutProps {
   children: React.ReactNode;
   bgClass?: string;
   progressBarGradient?: string;
+  title?: string;
 }
 
 export default function StaticContentLayout({
   children,
   bgClass = "bg-[#FAF8F5] text-zinc-900",
   progressBarGradient = "from-[#6F4E37] via-[#C5A880] to-[#6F4E37]",
+  title,
 }: StaticContentLayoutProps) {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   // Reading progress tracker
@@ -42,17 +41,11 @@ export default function StaticContentLayout({
         style={{ width: `${scrollProgress}%` }}
       />
 
-      {/* Navbar & Search */}
-      <Navbar onSearchClick={() => setIsSearchOpen(true)} />
-
-      <SearchOverlay
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+      <AppHeader title={title || "Information"} variant="contextual" showActions={true} />
 
       {children}
 
-      <Footer />
+
     </div>
   );
 }

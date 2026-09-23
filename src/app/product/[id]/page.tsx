@@ -160,7 +160,7 @@ export default function ProductDetailPage() {
   }, [OTHER_SELLERS, sellerFilter]);
 
   // Derive delivery address text
-  const defaultAddress = addresses.find(a => a.id === activeAddressId) || addresses[0];
+  const defaultAddress = addresses.find(a => a.id === activeAddressId);
   const addressText = defaultAddress 
     ? `${defaultAddress.type.toUpperCase()} ${defaultAddress.address}, ${defaultAddress.city}, ${defaultAddress.state}...`
     : "Select Delivery Address";
@@ -1381,9 +1381,26 @@ export default function ProductDetailPage() {
               
               <form onSubmit={(e) => {
                 e.preventDefault();
+                
+                // Save to localStorage so it appears in My Reviews
+                const saved = localStorage.getItem('submittedReviews');
+                const parsed = saved ? JSON.parse(saved) : {};
+                
+                const productId = params.id ? decodeURIComponent(params.id as string) : 'PRODUCT_ID';
+                
+                parsed[productId] = {
+                  rating: reviewForm.rating,
+                  reviewTitle: reviewForm.title,
+                  reviewText: reviewForm.content,
+                  photos: reviewPreviewUrl ? [reviewPreviewUrl] : []
+                };
+                
+                localStorage.setItem('submittedReviews', JSON.stringify(parsed));
+                
                 setIsWritingReview(false);
                 setReviewForm({ rating: 0, title: '', content: '', name: '', email: '', file: null });
-                alert("Thanks for your review! It is currently pending approval.");
+                setReviewPreviewUrl(null);
+                alert("Thanks for your review! It has been successfully saved to your account.");
               }} className="flex flex-col gap-8 relative z-10">
                 
                 {/* Rating Stars */}
