@@ -36,7 +36,7 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
 
     const autoScroll = () => {
       const el = scrollContainerRef.current;
-      if (el && !isDragging) {
+      if (el && !isDragging && !isPaused) {
         el.scrollLeft += speed;
         // Infinite seamless wraparound loop forward & backward
         const halfWidth = el.scrollWidth / 3;
@@ -51,10 +51,12 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
 
     animationFrameId = requestAnimationFrame(autoScroll);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isDragging]);
+  }, [isDragging, isPaused]);
 
   // Mouse Drag-to-Scroll
   const handleMouseDown = (e: React.MouseEvent) => {
+    setIsPaused(true);
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
     const el = scrollContainerRef.current;
     if (!el) return;
     setIsDragging(true);
@@ -76,6 +78,22 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
     if (isDragging) {
       setIsDragging(false);
     }
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 2000);
+  };
+
+  const handleTouchStart = () => {
+    setIsPaused(true);
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+  };
+
+  const handleTouchEnd = () => {
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 2000);
   };
 
   const scrollByAmount = (amount: number) => {
@@ -126,6 +144,10 @@ export default function CategoryBubbles({ basePath = "" }: { basePath?: string }
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUpOrLeave}
+          onMouseLeave={handleMouseUpOrLeave}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
           className={`flex gap-3 md:gap-5 py-4 px-4 sm:px-8 overflow-x-auto scrollbar-none select-none snap-x snap-mandatory ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
