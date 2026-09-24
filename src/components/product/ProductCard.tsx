@@ -140,7 +140,7 @@ export default function ProductCard({
 
   return (
     <div
-      className="group relative flex flex-col justify-start w-full h-full bg-white dark:bg-zinc-900/70 hover:bg-stone-50/50 dark:hover:bg-zinc-900 rounded-[16px] sm:rounded-[26px] p-2 sm:p-4 border border-stone-200/85 dark:border-zinc-800/80 hover:border-stone-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)] transition-all duration-400 ease-out select-none"
+      className="group relative flex flex-col justify-start w-full h-full bg-white dark:bg-zinc-900/70 hover:bg-stone-50/50 dark:hover:bg-zinc-900 rounded-[16px] sm:rounded-[26px] p-2.5 sm:p-4 border border-stone-200/85 dark:border-zinc-800/80 hover:border-stone-300 dark:hover:border-zinc-700 shadow-xs hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.6)] transition-all duration-400 ease-out select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -179,7 +179,7 @@ export default function ProductCard({
         {inStock && (
           <button
             onClick={handleWishlistClick}
-            className={`absolute top-2 right-2 sm:top-2.5 sm:right-2.5 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full backdrop-blur-md border flex items-center justify-center hover:scale-110 active:scale-90 transition-all duration-300 cursor-pointer shadow-xs ${
+            className={`absolute top-2 right-2 sm:top-2.5 sm:right-2.5 z-10 w-8 h-8 sm:w-8 sm:h-8 rounded-full backdrop-blur-md border flex items-center justify-center hover:scale-110 active:scale-90 transition-all duration-300 cursor-pointer shadow-xs ${
               isLiked
                 ? "bg-rose-50 dark:bg-rose-950/90 border-rose-200 dark:border-rose-800 text-rose-500"
                 : "bg-white/90 dark:bg-zinc-900/90 border-stone-200/80 dark:border-white/10 text-zinc-700 dark:text-zinc-200 hover:text-rose-500"
@@ -187,7 +187,7 @@ export default function ProductCard({
             aria-label="Add to favorites"
           >
             <Heart
-              className={`w-3 h-3 sm:w-3.5 sm:h-3.5 transition-colors ${
+              className={`w-4 h-4 sm:w-3.5 sm:h-3.5 transition-colors ${
                 isLiked ? "text-rose-500" : "currentColor"
               }`}
               fill={isLiked ? "currentColor" : "none"}
@@ -229,16 +229,16 @@ export default function ProductCard({
       </div>
 
       {/* Meta & Pricing Details */}
-      <div className="mt-2 sm:mt-3 flex flex-col text-left">
+      <div className="mt-3 sm:mt-3 flex flex-col text-left">
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between gap-1">
-            <span className="text-[8px] sm:text-[9px] font-mono font-bold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase">
+            <span className="text-[10px] sm:text-[9px] font-mono font-bold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase">
               {brand}
             </span>
           </div>
 
           <Link href={productUrl} className="block mt-0.5 sm:mt-1">
-            <h4 className="text-[11px] sm:text-[13px] font-medium text-zinc-900 dark:text-zinc-100 tracking-tight line-clamp-1 group-hover:text-[#6F4E37] dark:group-hover:text-[#E6C280] transition-colors">
+            <h4 className="text-xs sm:text-[13px] font-semibold sm:font-medium text-zinc-900 dark:text-zinc-100 tracking-tight line-clamp-1 group-hover:text-[#6F4E37] dark:group-hover:text-[#E6C280] transition-colors">
               {name}
             </h4>
           </Link>
@@ -254,7 +254,7 @@ export default function ProductCard({
 
         {/* Color Swatches (Square Fabric Thumbnails) */}
         {!hideColorOptions && colors && colors.length > 0 && (
-          <div className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-2">
+          <div className="flex items-center gap-1.5 sm:gap-1.5 mt-2 sm:mt-2">
             {colors.map((color) => {
               const isActive = selectedColor === color.name;
               return (
@@ -262,7 +262,7 @@ export default function ProductCard({
                   key={color.name}
                   onClick={(e) => handleColorSelect(color.name, e)}
                   title={color.name}
-                  className={`relative w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-all duration-200 cursor-pointer overflow-hidden ${
+                  className={`relative w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0 transition-all duration-200 cursor-pointer overflow-hidden ${
                     isActive
                       ? "ring-1 ring-zinc-900 dark:ring-white scale-110 shadow-sm z-10 rounded-[2px] border border-white dark:border-zinc-950"
                       : "ring-1 ring-zinc-200 dark:ring-zinc-800 hover:ring-zinc-400 rounded-[2px]"
@@ -287,7 +287,7 @@ export default function ProductCard({
           <button
             disabled={!inStock}
             onClick={handleAddToCartClick}
-            className={`w-full mt-1.5 sm:mt-2 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-300 border-none select-none ${
+            className={`w-full mt-2 sm:mt-2 text-[10px] sm:text-[10px] font-mono font-bold uppercase tracking-wider py-2.5 sm:py-2.5 rounded-xl sm:rounded-xl transition-all duration-300 border-none select-none ${
               !inStock
                 ? "bg-stone-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed"
                 : isAdded

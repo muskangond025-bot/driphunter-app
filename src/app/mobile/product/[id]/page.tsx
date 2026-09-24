@@ -55,43 +55,14 @@ export default function MobileProductDetailPage() {
   const slug = params?.id as string || "";
 
   const foundProduct = useMemo(() => {
-    if (!slug) return null;
+    if (!slug) return {};
     return MOCK_PRODUCTS.find(p => p.id === slug) || 
            LIMITED_DROPS.find(p => p.id === slug) || 
-           (DEAL_OF_THE_DAY.product.id === slug ? DEAL_OF_THE_DAY.product : null);
+           (DEAL_OF_THE_DAY.product.id === slug ? DEAL_OF_THE_DAY.product : null) || {};
   }, [slug]);
 
-  if (!foundProduct) {
-    return (
-      <AppPageLayout hasBottomNav={false}>
-        <AppHeader 
-          variant="contextual" 
-          title="Not Found"
-          fallbackUrl="/mobile/explore"
-        />
-        <div className="flex flex-col items-center justify-center min-h-[80vh] px-6 text-center">
-          <div className="w-20 h-20 bg-zinc-50 dark:bg-zinc-900/50 rounded-full flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800">
-            <ShoppingBag className="w-8 h-8 text-zinc-300 dark:text-zinc-600" />
-          </div>
-          <h1 className="text-2xl font-black font-sans uppercase tracking-tight text-zinc-900 dark:text-white mb-3">
-            Product Not Found
-          </h1>
-          <p className="text-sm font-sans text-zinc-500 dark:text-zinc-400 mb-8 max-w-[280px]">
-            The product you are looking for might have been removed, sold out, or the link is invalid.
-          </p>
-          <button
-            onClick={() => router.push("/mobile/explore")}
-            className="w-full max-w-[240px] bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 h-14 rounded-2xl font-bold font-mono uppercase tracking-widest text-xs active:scale-95 transition-transform"
-          >
-            Continue Shopping
-          </button>
-        </div>
-      </AppPageLayout>
-    );
-  }
-
   const dynamicName = (foundProduct as any).title || (foundProduct as any).name || productDetail.name;
-  const productPrice = foundProduct.price || productDetail.price;
+  const productPrice = (foundProduct as any).price || productDetail.price;
   
   const isLiked = isInWishlist(slug);
   const defaultAddress = addresses.find(a => a.id === activeAddressId);
@@ -125,6 +96,49 @@ export default function MobileProductDetailPage() {
   const [isSizeSheetOpen, setIsSizeSheetOpen] = useState(false);
   const [isShareSheetOpen, setIsShareSheetOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Style With Us State
+  const [styledItems, setStyledItems] = useState<Record<string, boolean>>({
+    cap: false,
+    tee: false,
+    pants: false,
+    shoes: false,
+  });
+
+  const toggleStyledItem = (id: string) => {
+    setStyledItems(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const totalOutfitPrice = useMemo(() => {
+    return stylingItems.reduce((total, item) => {
+      if (styledItems[item.id]) {
+        return total + item.price;
+      }
+      return total;
+    }, 0);
+  }, [styledItems]);
+
+  const handleAddOutfitToBag = () => {
+    let added = false;
+    stylingItems.forEach(item => {
+      if (styledItems[item.id]) {
+        addToCart({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          brand: "Accessories",
+          size: "M",
+          color: item.color,
+        }, 1);
+        added = true;
+      }
+    });
+    if (added) {
+      setToastMsg("Outfit added to cart");
+      setTimeout(() => setToastMsg(null), 3000);
+    }
+  };
 
   // Update active image index based on scroll position
   useEffect(() => {
@@ -598,6 +612,129 @@ export default function MobileProductDetailPage() {
 
         <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
 
+        {/* 11. STYLE WITH US (INTERACTIVE) */}
+        <div className="px-5 py-8">
+          <div className="mb-6 text-left">
+            <span className="text-[10px] font-mono tracking-[0.2em] text-[#6F4E37] dark:text-[#E6C280] font-bold uppercase block mb-1">
+              Curated Lookbook
+            </span>
+            <h3 className="text-2xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair uppercase leading-none">
+              Style With <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Us</span>
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 leading-relaxed font-sans">
+              Elevate your wardrobe with perfectly paired pieces. Select items to complete the look.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-6 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-3xl p-5 border border-zinc-100 dark:border-zinc-800/60 shadow-sm">
+            {/* Lookbook Mannequin */}
+            <div className="relative rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 h-[400px] w-full">
+              <img
+                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80"
+                alt="Curated Look"
+                className="w-full h-full object-cover"
+              />
+              
+              {/* Elegant Hotspots */}
+              {[
+                { id: "cap", top: "12%", left: "48%" },
+                { id: "tee", top: "32%", left: "45%" },
+                { id: "pants", top: "60%", left: "52%" },
+                { id: "shoes", top: "88%", left: "50%" },
+              ].map((spot) => (
+                <div
+                  key={spot.id}
+                  onClick={() => toggleStyledItem(spot.id)}
+                  className={`absolute w-4 h-4 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 -translate-x-1/2 -translate-y-1/2 before:content-[''] before:absolute before:inset-0 before:rounded-full before:border before:animate-ping ${
+                    styledItems[spot.id]
+                      ? "bg-[#6F4E37] before:border-[#6F4E37] shadow-[0_0_10px_rgba(111,78,55,0.5)]"
+                      : "bg-white/80 before:border-white shadow-sm"
+                  }`}
+                  style={{ top: spot.top, left: spot.left }}
+                >
+                  {styledItems[spot.id] && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                </div>
+              ))}
+            </div>
+
+            {/* Wardrobe Selection */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100 font-mono">
+                  The Collection
+                </h4>
+                <span className="text-[10px] font-mono text-zinc-500 uppercase">
+                  {Object.values(styledItems).filter(Boolean).length} Selected
+                </span>
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                {stylingItems.map((item) => {
+                  const isActive = styledItems[item.id];
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => toggleStyledItem(item.id)}
+                      className={`group flex items-center gap-3 p-2.5 rounded-2xl cursor-pointer transition-all duration-300 border ${
+                        isActive
+                          ? "bg-white dark:bg-zinc-800/80 border-zinc-300 dark:border-zinc-600 shadow-sm"
+                          : "bg-transparent border-transparent"
+                      }`}
+                    >
+                      <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 shrink-0">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
+                      </div>
+                      <div className="flex-grow overflow-hidden">
+                        <span className="text-[9px] font-mono tracking-widest text-zinc-400 uppercase font-bold block mb-0.5 truncate">
+                          {item.color}
+                        </span>
+                        <h5 className={`text-xs font-semibold transition-colors duration-300 truncate ${isActive ? "text-[#6F4E37] dark:text-[#E6C280]" : "text-zinc-900 dark:text-zinc-100"}`}>
+                          {item.name}
+                        </h5>
+                        <div className="mt-1">
+                          <strong className="text-xs font-mono text-zinc-900 dark:text-zinc-100">
+                            ₹{item.price.toLocaleString()}
+                          </strong>
+                        </div>
+                      </div>
+                      <div className="pr-2 shrink-0">
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 ${
+                          isActive 
+                            ? "bg-[#6F4E37] border-[#6F4E37] text-white" 
+                            : "border-zinc-300 dark:border-zinc-700 text-transparent"
+                        }`}>
+                          {isActive && <Check className="w-3 h-3 stroke-[3]" />}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Action Area */}
+              <div className="mt-4 pt-5 border-t border-zinc-200 dark:border-zinc-800 flex flex-col gap-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block">
+                    Total Value
+                  </span>
+                  <strong className="text-xl font-light font-playfair text-zinc-900 dark:text-zinc-100">
+                    ₹{totalOutfitPrice.toLocaleString()}
+                  </strong>
+                </div>
+                <button
+                  onClick={handleAddOutfitToBag}
+                  className="w-full py-3.5 bg-zinc-900 hover:bg-[#6F4E37] text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-[#E6C280] rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  Add to Bag
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
+
         {/* 12. SIMILAR PRODUCTS */}
         <div className="px-5 py-8">
           <h3 className="text-sm font-black font-sans uppercase tracking-widest text-zinc-950 dark:text-white mb-6">
@@ -605,7 +742,7 @@ export default function MobileProductDetailPage() {
           </h3>
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
             {similarProducts.map((p) => (
-              <div key={p.id} className="w-[160px] shrink-0 snap-start">
+              <div key={p.id} className="w-[45vw] sm:w-[200px] shrink-0 snap-start">
                 <ProductCard
                   id={p.id}
                   brand={p.brand}

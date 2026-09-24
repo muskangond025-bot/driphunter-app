@@ -137,7 +137,7 @@ export default function MobileAccountPage() {
         </div>
 
         {/* SECTION 2 - QUICK ACCOUNT ACTIONS */}
-        <div className="grid grid-cols-4 gap-4 p-4 bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800">
+        <div className="grid grid-cols-4 gap-4 p-4 bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800">
           <Link href="/mobile/orders" className="flex flex-col items-center gap-2 group">
             <div className="w-12 h-12 bg-zinc-50 dark:bg-zinc-800 rounded-full flex items-center justify-center group-active:scale-95 transition-transform border border-zinc-100 dark:border-zinc-700">
               <Package className="w-5 h-5 text-zinc-700 dark:text-zinc-300" />
@@ -174,7 +174,7 @@ export default function MobileAccountPage() {
         </div>
 
         {/* MY REVIEWS */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col p-4">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col p-4">
           <Link href="/mobile/reviews" className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-950/30 rounded-xl active:scale-[0.98] transition-transform">
             <div className="flex items-center gap-3 text-orange-700 dark:text-orange-400">
               <Star className="w-5 h-5" />
@@ -185,7 +185,7 @@ export default function MobileAccountPage() {
         </div>
 
         {/* OFFERS & REWARDS */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col p-4">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col p-4">
           <Link href="/mobile/coupons" className="flex items-center justify-between p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-xl active:scale-[0.98] transition-transform">
             <div className="flex items-center gap-3 text-indigo-700 dark:text-indigo-400">
               <Ticket className="w-5 h-5" />
@@ -196,31 +196,31 @@ export default function MobileAccountPage() {
         </div>
 
         {/* PROFILE SETTINGS */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
           <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">{t("profileSettings")}</div>
           
-          <Link href="/mobile/profile" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/mobile/profile" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <User className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("editProfile")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
           </Link>
-          <Link href="/mobile/pan" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/mobile/pan" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <IdCard className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("panCard")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
           </Link>
-          <Link href="/mobile/addresses" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/mobile/addresses" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <MapPin className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("savedAddresses")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
           </Link>
-          <Link href="/mobile/language" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors cursor-pointer">
+          <Link href="/mobile/language" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors cursor-pointer">
             <div className="flex items-center gap-3">
               <Globe className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("changeLang")}</span>
@@ -230,7 +230,7 @@ export default function MobileAccountPage() {
               <ChevronRight className="w-4 h-4 text-zinc-400" />
             </div>
           </Link>
-          <Link href="/mobile/notification-settings" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/mobile/notification-settings" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <Bell className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("notifSettings")}</span>
@@ -259,10 +259,10 @@ export default function MobileAccountPage() {
         </div>
 
         {/* PAYMENTS & WALLETS */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
           <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">{t("paymentsWallets")}</div>
           
-          <Link href="/mobile/gift-cards" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/mobile/gift-cards" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <CreditCard className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("giftCard")}</span>
@@ -272,7 +272,7 @@ export default function MobileAccountPage() {
               <ChevronRight className="w-4 h-4 text-zinc-400" />
             </div>
           </Link>
-          <Link href="/mobile/upi" className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors cursor-pointer">
+          <Link href="/mobile/upi" className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors cursor-pointer">
             <div className="flex items-center gap-3">
               <CreditCard className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("savedUpi")}</span>
@@ -289,54 +289,54 @@ export default function MobileAccountPage() {
         </div>
 
         {/* EARN WITH DRIPHUNTER */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
           <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">{t("earnWith")}</div>
           
-          <button onClick={() => setShowUnavailablePopup(true)} className="w-full text-left flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/affiliate" className="w-full text-left flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <TrendingUp className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("affiliateProg")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
-          </button>
-          <button onClick={() => setShowUnavailablePopup(true)} className="w-full text-left flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          </Link>
+          <Link href="/become-seller" className="w-full text-left flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <Store className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("sellOnDrip")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
-          </button>
+          </Link>
         </div>
 
         {/* FAQ & TERMS */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
           <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">{t("faqTerms")}</div>
           
-          <button onClick={() => setShowUnavailablePopup(true)} className="w-full text-left flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          <Link href="/faqs" className="w-full text-left flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <HelpCircle className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("faqs")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
-          </button>
-          <button onClick={() => setShowUnavailablePopup(true)} className="w-full text-left flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          </Link>
+          <Link href="/terms" className="w-full text-left flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("termsPolicies")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
-          </button>
-          <button onClick={() => setShowUnavailablePopup(true)} className="w-full text-left flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
+          </Link>
+          <Link href="/privacy" className="w-full text-left flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
             <div className="flex items-center gap-3">
               <ShieldCheck className="w-5 h-5 text-zinc-400" />
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">{t("privacyCenter")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400" />
-          </button>
+          </Link>
         </div>
 
         {/* FOLLOW US ON */}
-        <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col p-4">
+        <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col p-4">
           <div className="text-sm font-bold text-zinc-900 dark:text-white mb-4">{t("followUs")}</div>
           <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 whitespace-nowrap active:scale-95 transition-transform">
@@ -364,7 +364,7 @@ export default function MobileAccountPage() {
 
         {/* SECURITY */}
         {isSignedIn && (
-          <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+          <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
             <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">Security</div>
             <div className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors">
               <div className="flex items-center gap-3 pr-4">
@@ -387,7 +387,7 @@ export default function MobileAccountPage() {
 
         {/* ACCOUNT MANAGEMENT */}
         {isSignedIn && (
-          <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+          <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
             <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">Account Management</div>
             <button 
               onClick={() => setShowLogoutPopup(true)} 
@@ -401,11 +401,11 @@ export default function MobileAccountPage() {
 
         {/* DANGER ZONE */}
         {isSignedIn && (
-          <div className="bg-white dark:bg-zinc-900 mt-2 border-y border-zinc-200 dark:border-zinc-800 flex flex-col">
+          <div className="bg-white dark:bg-zinc-900 mt-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
             <div className="px-4 py-4 text-sm font-bold text-zinc-900 dark:text-white">Danger Zone</div>
             <button 
               onClick={() => setShowDeactivatePopup(true)} 
-              className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors cursor-pointer w-full text-left"
+              className="flex items-center justify-between px-4 py-3 active:bg-zinc-50 dark:active:bg-zinc-800 transition-colors cursor-pointer w-full text-left"
             >
               <span className="text-sm font-sans font-medium text-zinc-800 dark:text-zinc-200">Deactivate Account</span>
               <ChevronRight className="w-4 h-4 text-zinc-400" />

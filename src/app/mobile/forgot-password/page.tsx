@@ -23,7 +23,7 @@ export default function MobileForgotPasswordPage() {
     
     setTimeout(() => {
       setIsLoading(false);
-      setError("Backend Integration Required to send reset email.");
+      setSuccessMessage(`A reset link has been sent to ${email}. (Demo Mode)`);
     }, 1000);
   };
 

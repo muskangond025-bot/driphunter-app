@@ -8,6 +8,7 @@ import NewArrivals from "@/components/home/NewArrivals";
 import LimitedDrops from "@/components/home/LimitedDrops";
 import BrandShowcase from "@/components/home/BrandShowcase";
 import CuratedForYou from "@/components/home/CuratedForYou";
+import LiveEvents from "@/components/home/LiveEvents";
 import RecentlyViewed from "@/components/RecentlyViewed";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
@@ -40,6 +41,9 @@ export default function MobileHomePage() {
 
       {/* 6. Brand Grid / Showcase */}
       <BrandShowcase basePath={basePath} />
+
+      {/* Live Events Section */}
+      <LiveEvents />
 
       {/* 7. Recently Viewed Products */}
       <RecentlyViewed basePath={basePath} />

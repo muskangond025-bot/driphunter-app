@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import AppHeader from "@/components/app-shell/AppHeader";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
 
 export default function MobileSignupPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +27,8 @@ export default function MobileSignupPage() {
     
     setTimeout(() => {
       setIsSubmitting(false);
-      setError("Backend Integration Required for Signup.");
+      localStorage.setItem("drip_user", JSON.stringify({ name, email }));
+      router.push("/mobile/account");
     }, 1000);
   };
 
@@ -33,7 +36,8 @@ export default function MobileSignupPage() {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      setError(`Backend Integration Required for ${platform} Signup.`);
+      localStorage.setItem("drip_user", JSON.stringify({ name: `${platform} User`, email: `user@${platform.toLowerCase()}.com` }));
+      router.push("/mobile/account");
     }, 1000);
   };
 

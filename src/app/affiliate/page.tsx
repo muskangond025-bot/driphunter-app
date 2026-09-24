@@ -252,11 +252,11 @@ export default function AffiliatePage() {
             <div className="w-10 h-[2px] bg-[#6F4E37] dark:bg-[#E6C280] mx-auto mt-2 rounded-full" />
           </div>
 
-          <div className={cn("grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 transition-all duration-700 delay-200", stepsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6")}>
+          <div className={cn("flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 sm:gap-8 pb-4 transition-all duration-700 delay-200", stepsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6")}>
             {steps.map((step, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[32px] p-8 relative flex flex-col justify-between transition-all duration-500 hover:border-[#6F4E37]/50 dark:hover:border-[#E6C280]/50 shadow-xs hover:shadow-xl hover:-translate-y-1.5 cursor-pointer overflow-hidden group text-left space-y-4"
+                className="w-[85vw] sm:w-[350px] shrink-0 snap-center sm:snap-start bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[32px] p-8 relative flex flex-col justify-between transition-all duration-500 hover:border-[#6F4E37]/50 dark:hover:border-[#E6C280]/50 shadow-xs hover:shadow-xl hover:-translate-y-1.5 cursor-pointer overflow-hidden group text-left space-y-4"
               >
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-[#6F4E37] dark:text-[#E6C280] uppercase">
@@ -292,13 +292,13 @@ export default function AffiliatePage() {
             </h2>
           </div>
 
-          <div className={cn("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transition-all duration-700 delay-200", benefitsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6")}>
+          <div className={cn("flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 pb-4 transition-all duration-700 delay-200", benefitsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6")}>
             {benefits.map((benefit, idx) => {
               const Icon = benefit.icon;
               return (
                 <div
                   key={idx}
-                  className="bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[28px] p-7 flex flex-col justify-between cursor-pointer overflow-hidden group shadow-xs hover:border-[#6F4E37]/50 dark:hover:border-[#E6C280]/50 hover:-translate-y-1 transition-all duration-300 text-left space-y-4"
+                  className="w-[80vw] sm:w-[300px] shrink-0 snap-center sm:snap-start bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[28px] p-7 flex flex-col justify-between cursor-pointer overflow-hidden group shadow-xs hover:border-[#6F4E37]/50 dark:hover:border-[#E6C280]/50 hover:-translate-y-1 transition-all duration-300 text-left space-y-4"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] dark:bg-zinc-800 text-[#6F4E37] dark:text-[#E6C280] border border-stone-200 dark:border-zinc-700 flex items-center justify-center transition-all duration-500 shadow-xs group-hover:scale-110">
                     <Icon className="w-5 h-5" />

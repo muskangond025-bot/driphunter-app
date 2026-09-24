@@ -6,8 +6,19 @@ const nextConfig: NextConfig = {
       {
         source: "/",
         destination: "/mobile",
-        permanent: false, // use false so we don't aggressively cache a redirect on the live project during transition
+        permanent: false,
       },
+    ];
+  },
+  async rewrites() {
+    return [
+      { source: "/account", destination: "/mobile/account" },
+      { source: "/cart", destination: "/mobile/cart" },
+      { source: "/categories", destination: "/mobile/categories" },
+      { source: "/search", destination: "/mobile/search" },
+      { source: "/wishlist", destination: "/mobile/wishlist" },
+      { source: "/profile", destination: "/mobile/profile" },
+      { source: "/orders", destination: "/mobile/orders" },
     ];
   },
   /* config options here */

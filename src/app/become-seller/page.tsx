@@ -425,14 +425,14 @@ export default function BecomeSellerPage() {
             <div className="w-10 h-[2px] bg-[#6F4E37] dark:bg-[#E6C280] mx-auto mt-2 rounded-full" />
           </div>
 
-          <div className={cn("grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 transition-all duration-700 delay-200", reasonsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+          <div className={cn("flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 sm:gap-8 pb-4 transition-all duration-700 delay-200", reasonsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
             {reasons.map((reason, idx) => {
               const [num, label] = reason.index.split(" // ");
               return (
                 <div
                   key={idx}
-                  className={`bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[32px] p-6 sm:p-8 hover:shadow-xl hover:border-[#6F4E37]/45 dark:hover:border-[#E6C280]/40 transition-all duration-500 hover:-translate-y-1.5 group flex flex-col justify-between relative overflow-hidden text-left ${
-                    reason.wide ? "lg:col-span-2" : "lg:col-span-1"
+                  className={`shrink-0 snap-center sm:snap-start bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[32px] p-6 sm:p-8 hover:shadow-xl hover:border-[#6F4E37]/45 dark:hover:border-[#E6C280]/40 transition-all duration-500 hover:-translate-y-1.5 group flex flex-col justify-between relative overflow-hidden text-left ${
+                    reason.wide ? "w-[90vw] sm:w-[600px]" : "w-[85vw] sm:w-[350px]"
                   }`}
                 >
                   <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#6F4E37] dark:bg-[#E6C280] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left z-10" />
@@ -650,11 +650,11 @@ export default function BecomeSellerPage() {
             <div className="w-10 h-[2px] bg-[#6F4E37] dark:bg-[#E6C280] mx-auto mt-2 rounded-full" />
           </div>
 
-          <div className={cn("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 transition-all duration-700 delay-200", processVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+          <div className={cn("flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 sm:gap-8 pb-4 transition-all duration-700 delay-200", processVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
             {processSteps.map((step, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[32px] p-6 shadow-xs transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:border-[#6F4E37]/35 dark:hover:border-[#E6C280]/40 relative overflow-hidden group flex flex-col justify-between text-left min-h-[360px]"
+                className="w-[85vw] sm:w-[320px] shrink-0 snap-center sm:snap-start bg-white dark:bg-zinc-900/80 border border-stone-200/90 dark:border-zinc-800/90 rounded-[32px] p-6 shadow-xs transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl hover:border-[#6F4E37]/35 dark:hover:border-[#E6C280]/40 relative overflow-hidden group flex flex-col justify-between text-left min-h-[360px]"
               >
                 <div className="absolute -top-4 -right-1 text-7xl font-playfair font-black text-stone-100 dark:text-zinc-800/40 select-none pointer-events-none group-hover:text-[#6F4E37]/10 dark:group-hover:text-[#E6C280]/15 transition-colors duration-500 z-0">
                   0{idx + 1}

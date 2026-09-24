@@ -6,7 +6,14 @@ import OfflineWrapper from "@/components/mobile/OfflineWrapper";
 export const metadata: Metadata = {
   title: "DripHunter Mobile",
   description: "DripHunter App Experience",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function MobileLayout({ children }: { children: React.ReactNode }) {

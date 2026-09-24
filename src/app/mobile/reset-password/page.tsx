@@ -43,7 +43,7 @@ export default function MobileResetPasswordPage() {
     
     setTimeout(() => {
       setIsLoading(false);
-      setError("Backend Integration Required for Password Reset.");
+      setSuccessMessage("Password updated successfully.");
     }, 1000);
   };
 

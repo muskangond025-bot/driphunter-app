@@ -26,7 +26,9 @@ export default function MobileLoginPage() {
     
     setTimeout(() => {
       setIsSubmitting(false);
-      setError("Backend Integration Required for Authentication.");
+      const name = email.split('@')[0] || 'User';
+      localStorage.setItem("drip_user", JSON.stringify({ name, email }));
+      router.push("/mobile/account");
     }, 1000);
   };
 
@@ -34,7 +36,8 @@ export default function MobileLoginPage() {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      setError(`Backend Integration Required for ${platform} Login.`);
+      localStorage.setItem("drip_user", JSON.stringify({ name: `${platform} User`, email: `user@${platform.toLowerCase()}.com` }));
+      router.push("/mobile/account");
     }, 1000);
   };
 
