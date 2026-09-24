@@ -128,12 +128,12 @@ export default function LimitedDrops({ basePath = "" }: { basePath?: string }) {
             <SectionHeading
               variant="playfair"
               className="text-zinc-950 dark:text-zinc-50"
-              title={<>LIMITED <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">DROPS</span></>}
+              title={<>DEALS <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">OF THE DAY</span></>}
               eyebrow={
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#6F4E37] dark:bg-[#E6C280] animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
                   <span className="text-[10px] font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
-                    Exclusive pieces. Limited availability.
+                    Today's Specials
                   </span>
                 </div>
               }
@@ -224,30 +224,62 @@ export default function LimitedDrops({ basePath = "" }: { basePath?: string }) {
         </div>
       </div>
 
-      {/* Horizontal Product Carousel (Mobile Only) */}
+      {/* Horizontal Deals Carousel (Mobile Only) */}
       <div 
-        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
+        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-4 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        {[...LIMITED_DROPS, ...MOCK_PRODUCTS.filter(p => p.isLimited)].slice(0, 6).map((p, i) => (
-          <div 
-            key={p.id} 
-            className="w-[155px] sm:w-[170px] shrink-0 flex flex-col justify-between snap-start"
+        {dealCards.map((card) => (
+          <div
+            key={card.id}
+            className="w-[280px] sm:w-[320px] shrink-0 border border-zinc-800 rounded-3xl overflow-hidden flex flex-col justify-between shadow-md snap-start p-6 min-h-[380px] relative bg-zinc-950"
           >
-            <ProductCard 
-              id={p.id}
-              name={p.title}
-              brand={p.brand}
-              price={`₹${p.price}`}
-              originalPrice={p.originalPrice ? `₹${p.originalPrice}` : undefined}
-              image={p.image}
-              hoverImage={p.hoverImage}
-              inStock={p.inStock !== false}
-              badge={p.isLimited ? "Limited Drop" : undefined}
-              rating={undefined} 
-              basePath={basePath} 
-            />
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              <img
+                src={card.image}
+                alt={card.tag}
+                className="w-full h-full object-cover"
+              />
+              {/* Premium dark gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/65 to-zinc-950/20 z-10" />
+            </div>
+
+            {/* Header block */}
+            <div className="relative z-20">
+              <span className="text-[10px] font-bold tracking-[0.2em] text-amber-400 uppercase font-mono block">
+                {card.tag}
+              </span>
+            </div>
+
+            {/* Centered Main Typographical Banner */}
+            <div className="my-auto flex flex-col items-start text-left pt-4 pb-6 relative z-20">
+              <h3 className="text-2xl font-light uppercase tracking-tight text-white font-playfair leading-none">
+                {card.titleLine1} <span className="font-serif italic font-normal text-amber-100 inline">{card.titleLine2}</span> {card.titleLine3}
+              </h3>
+              <p className="text-sm font-bold text-amber-400 mt-2 uppercase tracking-wider font-mono">
+                {card.offer}
+              </p>
+              <p className="text-[11px] text-zinc-300 font-sans font-light mt-2 max-w-[200px] leading-relaxed">
+                {card.description}
+              </p>
+            </div>
+
+            {/* Footer action block */}
+            <div className="border-t border-zinc-800/80 pt-4 w-full flex items-center justify-between mt-auto relative z-20">
+              <span className="text-[9px] font-mono text-zinc-400 tracking-wider">
+                {card.footerText}
+              </span>
+              
+              <Link
+                href={basePath === "/mobile" ? `/mobile${card.href}` : `${basePath}${card.href}`}
+                className="inline-flex items-center gap-1.5 bg-white text-zinc-950 text-[9px] font-bold uppercase tracking-widest py-2 px-4 rounded-xl shadow-md active:scale-95 border-none font-sans"
+              >
+                {card.btnLabel}
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         ))}
         {/* Spacer to prevent clipping */}

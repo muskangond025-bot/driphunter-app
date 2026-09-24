@@ -42,7 +42,7 @@ export default function HeroSection() {
     >
       {/* GPU Accelerated Morphing Card Container */}
       <div
-        className={`relative md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-0 overflow-hidden shadow-lg select-none pointer-events-none flex items-center justify-center will-change-transform transform-gpu transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-full aspect-[4/3] rounded-[24px] sm:rounded-[28px] border border-black/5 dark:border-white/5 ${
+        className={`relative md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-0 overflow-hidden shadow-lg select-none pointer-events-none flex items-center justify-center will-change-transform transform-gpu transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-full aspect-[4/5] rounded-[24px] sm:rounded-[28px] border border-black/5 dark:border-white/5 ${
           isScrolled
             ? "md:w-[360px] lg:w-[400px] xl:w-[440px] md:h-[76%] lg:h-[80%] xl:h-[82%] md:aspect-auto md:rounded-[3rem] md:border-black/10 md:dark:border-white/15 md:shadow-2xl"
             : "md:w-full md:h-full md:aspect-auto md:rounded-none md:border-transparent md:shadow-none"

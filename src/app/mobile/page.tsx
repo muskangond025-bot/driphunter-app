@@ -7,9 +7,12 @@ import CategoryBubbles from "@/components/home/CategoryBubbles";
 import NewArrivals from "@/components/home/NewArrivals";
 import LimitedDrops from "@/components/home/LimitedDrops";
 import BrandShowcase from "@/components/home/BrandShowcase";
+import BrandTeasers from "@/components/home/BrandTeasers";
 import CuratedForYou from "@/components/home/CuratedForYou";
 import LiveEvents from "@/components/home/LiveEvents";
+import InstagramFeed from "@/components/InstagramFeed";
 import RecentlyViewed from "@/components/RecentlyViewed";
+import CommunityFeed from "@/components/home/CommunityFeed";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { ArrowRight } from "lucide-react";
@@ -36,17 +39,29 @@ export default function MobileHomePage() {
       {/* 4. Deals of the Day Split Grid */}
       <LimitedDrops basePath={basePath} />
 
-      {/* 5. Curated For You */}
-      <CuratedForYou basePath={basePath} />
+
 
       {/* 6. Brand Grid / Showcase */}
       <BrandShowcase basePath={basePath} />
 
-      {/* Live Events Section */}
-      <LiveEvents />
+      {/* Brand Teasers / Label Treasure */}
+      <BrandTeasers />
+
 
       {/* 7. Recently Viewed Products */}
       <RecentlyViewed basePath={basePath} />
+
+      {/* Featured Campaigns */}
+      <CommunityFeed basePath={basePath} />
+
+      {/* Live Events Section */}
+      <LiveEvents />
+
+      {/* 8. Curated For You */}
+      <CuratedForYou basePath={basePath} />
+
+      {/* 9. Instagram Feed */}
+      <InstagramFeed />
 
       {/* 8. Closing CTA */}
       <div className="px-6 py-12 flex flex-col items-center justify-center text-center mt-4">

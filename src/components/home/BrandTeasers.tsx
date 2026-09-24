@@ -45,7 +45,7 @@ export default function BrandTeasers() {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="bg-white dark:bg-zinc-950 pt-4 pb-10 sm:pt-6 sm:pb-12 border-t border-zinc-100 dark:border-zinc-900 select-none overflow-hidden relative">
+    <section ref={ref} className="bg-white dark:bg-zinc-950 pt-4 pb-10 sm:pt-6 sm:pb-12 border-t border-zinc-100 dark:border-zinc-900 select-none overflow-hidden relative">
       <div className="w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20">
         
         {/* Premium Editorial Header */}
@@ -68,10 +68,9 @@ export default function BrandTeasers() {
           </div>
         </div>
 
-        {/* Asymmetrical Collage Rows with Hover Accordion Width Expansion */}
+        {/* Desktop Asymmetrical Collage Rows */}
         <div
-          ref={ref}
-          className={`flex flex-col gap-6 w-full transition-all duration-1000 ease-out ${
+          className={`hidden md:flex flex-col gap-6 w-full transition-all duration-1000 ease-out ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
@@ -236,6 +235,53 @@ export default function BrandTeasers() {
               </div>
             </Link>
           </div>
+        </div>
+
+        {/* Mobile Horizontal Carousel */}
+        <div 
+          className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-4 select-none scroll-smooth flex-nowrap -mx-6 px-6 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          {teasers.map((teaser, index) => (
+            <Link
+              key={index}
+              href={teaser.href}
+              className="w-[280px] sm:w-[320px] shrink-0 group overflow-hidden rounded-[28px] relative flex flex-col justify-end p-5 border border-zinc-200/50 shadow-sm snap-start min-h-[360px] cursor-pointer"
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0 z-0">
+                <Image
+                  alt={teaser.brand}
+                  src={teaser.image}
+                  fill
+                  className="object-cover"
+                  sizes="280px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent opacity-85" />
+              </div>
+
+              {/* Floating Frosted Glass Info Panel */}
+              <div className="relative z-10 w-full bg-zinc-950/25 border border-white/5 backdrop-blur-md p-4 rounded-2xl flex flex-col items-start gap-1">
+                <span className="text-[9px] font-mono tracking-widest text-[#6F4E37] font-black uppercase">
+                  {teaser.tagline}
+                </span>
+                <h3 className="text-xl font-light text-white font-playfair tracking-wide uppercase">
+                  {teaser.brand}
+                </h3>
+                
+                <p className="text-[10px] text-zinc-300 font-sans font-light leading-relaxed max-w-md mt-1">
+                  {teaser.description}
+                </p>
+
+                <div className="flex items-center gap-1.5 text-[8px] font-mono text-white uppercase tracking-widest font-semibold mt-2">
+                  Explore Label
+                  <ArrowRight className="w-2.5 h-2.5" />
+                </div>
+              </div>
+            </Link>
+          ))}
+          <div className="w-4 shrink-0 pointer-events-none" />
         </div>
 
       </div>

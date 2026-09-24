@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Star,
   Heart,
@@ -27,8 +28,10 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useAddress } from "@/context/AddressContext";
 import AppPageLayout from "@/components/app-shell/AppPageLayout";
+import Footer from "@/components/layout/Footer";
 import AppHeader from "@/components/app-shell/AppHeader";
 import ProductCard from "@/components/product/ProductCard";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import DeliveryLocationSheet from "@/components/mobile/DeliveryLocationSheet";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
@@ -271,7 +274,20 @@ export default function MobileProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    setIsSizeSheetOpen(true);
+    addToCart(
+      {
+        id: slug,
+        name: dynamicName,
+        price: productPrice,
+        image: currentColor.images[0],
+        brand: (foundProduct as any).brand || productDetail.brand,
+        size: selectedSize,
+        color: currentColor.name,
+      },
+      quantity
+    );
+    setToastMsg("Saved in Cart");
+    setTimeout(() => setToastMsg(null), 3000);
   };
 
   const confirmAddToCart = (size: string) => {
@@ -344,7 +360,7 @@ export default function MobileProductDetailPage() {
             <span className="text-xs text-zinc-500">Search for products...</span>
           </div>
         }
-        fallbackUrl="/mobile/explore"
+        fallbackUrl="/mobile"
         rightAction={
           <button onClick={() => router.push('/mobile/cart')} className="p-2 transition-transform active:scale-95 text-zinc-700 dark:text-zinc-200 relative">
             <ShoppingBag className="w-6 h-6" />
@@ -356,6 +372,17 @@ export default function MobileProductDetailPage() {
           </button>
         }
       />
+
+      {/* ─── BREADCRUMBS ─── */}
+      <div className="w-full px-5 py-3 border-b border-zinc-100 dark:border-zinc-800">
+        <nav className="flex items-center gap-2 text-[10px] font-mono tracking-widest text-zinc-400 uppercase select-none">
+          <Link href="/mobile" className="hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">Home</Link>
+          <ChevronRight className="w-3 h-3" />
+          <Link href="/mobile/shop" className="hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">Clothing</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-[#6F4E37] dark:text-[#E6C280] font-bold truncate max-w-[120px] inline-block align-bottom">{dynamicName}</span>
+        </nav>
+      </div>
       
       {/* ─── MAIN CONTENT SCROLL CONTAINER ─── */}
       <div className="flex flex-col pb-[140px]"> {/* Bottom padding for sticky CTA */}
@@ -569,45 +596,182 @@ export default function MobileProductDetailPage() {
 
 
 
-        {/* 9. REVIEWS */}
-        <div className="px-5 py-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-black font-sans uppercase tracking-widest text-zinc-950 dark:text-white">
-              Reviews ({mockReviews.length})
-            </h3>
-            <div className="flex items-center gap-1 text-xs font-mono font-bold text-[#6F4E37] dark:text-[#E6C280]">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span>4.8</span>
+        {/* 6.5 VIRTUAL FITTING ROOM */}
+        <div className="px-5 py-8 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex flex-col gap-5 mb-8">
+            <div>
+              <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-[#6F4E37] dark:text-[#E6C280] block mb-2">
+                Interactive Experience
+              </span>
+              <h2 className="text-2xl font-light tracking-tight text-zinc-950 dark:text-zinc-50 font-playfair leading-tight">
+                Virtual <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Fitting Room</span>
+              </h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 font-sans font-light mt-2 max-w-lg">
+                See how the collection fits on you. Use your camera to try on pieces instantly, or view them on our studio models.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleResetFit}
+                className="text-xs font-mono font-bold tracking-wider text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+              >
+                <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? "animate-spin" : ""}`} />
+                RESET
+              </button>
+
+              <button
+                onClick={toggleLiveCamera}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 cursor-pointer ${
+                  isLiveCameraActive
+                    ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                    : "bg-white text-zinc-900 border border-zinc-200 hover:border-zinc-400 dark:bg-zinc-900 dark:text-white dark:border-zinc-700"
+                }`}
+              >
+                <Camera className="w-4 h-4" />
+                <span>{`${isLiveCameraActive ? "Stop Camera" : "Live Try-On"}`}</span>
+              </button>
             </div>
           </div>
-          
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
-            {mockReviews.slice(0, 3).map((rev) => (
-              <div key={rev.id} className="w-[280px] shrink-0 snap-center bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase font-mono">{rev.name}</h4>
-                    <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 block pt-0.5">{rev.date}</span>
-                  </div>
-                  <div className="flex text-yellow-500">
-                    {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-3 h-3 fill-current" />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans mt-2 line-clamp-3">
-                  "{rev.comment}"
-                </p>
-              </div>
-            ))}
-          </div>
 
-          <button 
-             onClick={() => router.push(`/mobile/reviews/write?orderId=${slug}`)}
-             className="w-full mt-4 py-3.5 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-bold font-mono uppercase tracking-widest text-zinc-950 dark:text-white bg-white dark:bg-zinc-950 active:scale-95 transition-transform shadow-sm"
-          >
-             Write a Review
-          </button>
+          <div className="flex flex-col gap-8">
+            {/* Visualizer */}
+            <div className="relative rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 h-[450px] border border-zinc-200/50 dark:border-zinc-800/50">
+              {isLiveCameraActive && hasWebcamAccess ? (
+                <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
+                  <video
+                    ref={(el) => {
+                      videoRef.current = el;
+                      if (el && activeStreamRef.current && el.srcObject !== activeStreamRef.current) {
+                        el.srcObject = activeStreamRef.current;
+                        el.play().catch(() => {});
+                      }
+                    }}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover scale-x-[-1]"
+                  />
+                  
+                  {selectedTryOnItem !== null && tryOnWardrobe[selectedTryOnItem] && (
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300 ease-out"
+                      style={{ transform: `translateY(${clothOffsetY}px)` }}
+                    >
+                      <div 
+                        className={`relative w-[280px] aspect-[3/4] -mt-10 transition-all duration-500 ease-out ${
+                          isClothMorphing ? "scale-95 opacity-40 blur-[3px]" : "scale-100 opacity-100"
+                        }`}
+                        style={{ transform: `scale(${clothScale})` }}
+                      >
+                        <Image
+                          key={`ar-cloth-${selectedTryOnItem}`}
+                          src={tryOnWardrobe[selectedTryOnItem]?.clothCutout || tryOnWardrobe[selectedTryOnItem]?.image}
+                          alt="Fitted Garment"
+                          fill
+                          className="object-cover drop-shadow-2xl"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedTryOnItem !== null && (
+                    <div className="absolute bottom-6 right-6 flex flex-col gap-2 bg-black/40 backdrop-blur-md p-3 rounded-2xl z-20">
+                      <div className="flex gap-2">
+                        <button onClick={() => setClothScale(s => s - 0.05)} className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center">-</button>
+                        <button onClick={() => setClothScale(s => s + 0.05)} className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center">+</button>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => setClothOffsetY(y => y - 10)} className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center">▲</button>
+                        <button onClick={() => setClothOffsetY(y => y + 10)} className="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center">▼</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="relative w-full h-full">
+                  <Image
+                    key={`model-tryon-${selectedTryOnItem ?? "clean"}`}
+                    src={
+                      selectedTryOnItem !== null && tryOnWardrobe[selectedTryOnItem]
+                        ? tryOnWardrobe[selectedTryOnItem]?.modelImage
+                        : "/images/awwwards_tryon_studio.jpg"
+                    }
+                    alt="Studio Model"
+                    fill
+                    className={`object-cover transition-all duration-700 ease-out ${
+                      isClothMorphing ? "opacity-50 blur-sm" : "opacity-100"
+                    }`}
+                  />
+                  {selectedTryOnItem !== null && (
+                    <div className="absolute bottom-6 left-6 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md px-4 py-2 rounded-full text-xs font-mono font-bold text-zinc-900 dark:text-white shadow-sm border border-zinc-200/50 dark:border-zinc-800/50">
+                      Viewing: {tryOnWardrobe[selectedTryOnItem]?.name}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Wardrobe Selection */}
+            <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-3xl p-5 border border-zinc-100 dark:border-zinc-800/80">
+              <h3 className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-4 font-bold">
+                The Wardrobe ({tryOnWardrobe.length})
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-2 scrollbar-thin max-h-[300px]">
+                {tryOnWardrobe.map((item, idx) => {
+                  const isSelected = selectedTryOnItem === idx;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleSelectWardrobeItem(idx)}
+                      className={`text-left p-3 rounded-2xl transition-all duration-300 border ${
+                        isSelected
+                          ? "border-[#6F4E37] dark:border-[#E6C280] bg-white dark:bg-zinc-800 shadow-sm"
+                          : "border-transparent bg-transparent"
+                      }`}
+                    >
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 mb-3">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          className="object-cover mix-blend-multiply dark:mix-blend-normal"
+                        />
+                      </div>
+                      <span className="text-[9px] font-mono text-zinc-400 block mb-1">
+                        {item.category}
+                      </span>
+                      <h4 className="text-[11px] font-semibold text-zinc-900 dark:text-white leading-tight">
+                        {item.name}
+                      </h4>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="pt-5 mt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <button
+                  onClick={() => {
+                    const fittedItem = selectedTryOnItem !== null ? tryOnWardrobe[selectedTryOnItem] : null;
+                    addToCart({
+                      id: fittedItem?.id || productDetail.id,
+                      name: fittedItem ? fittedItem.name : productDetail.name,
+                      price: productDetail.price,
+                      image: fittedItem?.image || currentColor.images[0],
+                      brand: productDetail.brand,
+                      size: selectedSize,
+                      color: currentColor.name
+                    }, 1);
+                  }}
+                  className="w-full py-3.5 rounded-full bg-zinc-900 hover:bg-[#6F4E37] text-white dark:bg-white dark:text-zinc-900 dark:hover:bg-[#E6C280] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  Add Current to Bag
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
@@ -660,10 +824,10 @@ export default function MobileProductDetailPage() {
             {/* Wardrobe Selection */}
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
-                <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100 font-mono">
+                <h4 className="text-[11px] font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100 font-mono">
                   The Collection
                 </h4>
-                <span className="text-[10px] font-mono text-zinc-500 uppercase">
+                <span className="text-[9px] font-mono text-zinc-500 uppercase">
                   {Object.values(styledItems).filter(Boolean).length} Selected
                 </span>
               </div>
@@ -685,14 +849,14 @@ export default function MobileProductDetailPage() {
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
                       </div>
                       <div className="flex-grow overflow-hidden">
-                        <span className="text-[9px] font-mono tracking-widest text-zinc-400 uppercase font-bold block mb-0.5 truncate">
+                        <span className="text-[8.5px] font-mono tracking-widest text-zinc-400 uppercase font-bold block mb-0.5 truncate">
                           {item.color}
                         </span>
-                        <h5 className={`text-xs font-semibold transition-colors duration-300 truncate ${isActive ? "text-[#6F4E37] dark:text-[#E6C280]" : "text-zinc-900 dark:text-zinc-100"}`}>
+                        <h5 className={`text-[11px] font-semibold transition-colors duration-300 truncate ${isActive ? "text-[#6F4E37] dark:text-[#E6C280]" : "text-zinc-900 dark:text-zinc-100"}`}>
                           {item.name}
                         </h5>
                         <div className="mt-1">
-                          <strong className="text-xs font-mono text-zinc-900 dark:text-zinc-100">
+                          <strong className="text-[11px] font-mono text-zinc-900 dark:text-zinc-100">
                             ₹{item.price.toLocaleString()}
                           </strong>
                         </div>
@@ -714,7 +878,7 @@ export default function MobileProductDetailPage() {
               {/* Action Area */}
               <div className="mt-4 pt-5 border-t border-zinc-200 dark:border-zinc-800 flex flex-col gap-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block">
+                  <span className="text-[9.5px] font-mono text-zinc-500 uppercase tracking-widest block">
                     Total Value
                   </span>
                   <strong className="text-xl font-light font-playfair text-zinc-900 dark:text-zinc-100">
@@ -723,7 +887,7 @@ export default function MobileProductDetailPage() {
                 </div>
                 <button
                   onClick={handleAddOutfitToBag}
-                  className="w-full py-3.5 bg-zinc-900 hover:bg-[#6F4E37] text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-[#E6C280] rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-zinc-900 hover:bg-[#6F4E37] text-white dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-[#E6C280] rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Add to Bag
@@ -735,11 +899,109 @@ export default function MobileProductDetailPage() {
 
         <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
 
+        {/* 9. REVIEWS */}
+        <div className="px-5 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-black font-sans uppercase tracking-widest text-zinc-950 dark:text-white">
+              Reviews ({mockReviews.length})
+            </h3>
+            <div className="flex items-center gap-1 text-xs font-mono font-bold text-[#6F4E37] dark:text-[#E6C280]">
+              <Star className="w-3.5 h-3.5 fill-current" />
+              <span>4.8</span>
+            </div>
+          </div>
+          
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
+            {mockReviews.slice(0, 3).map((rev) => (
+              <div key={rev.id} className="w-[280px] shrink-0 snap-center bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase font-mono">{rev.name}</h4>
+                    <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 block pt-0.5">{rev.date}</span>
+                  </div>
+                  <div className="flex text-yellow-500">
+                    {[...Array(rev.rating)].map((_, i) => (
+                      <Star key={i} className="w-3 h-3 fill-current" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-sans mt-2 line-clamp-3">
+                  "{rev.comment}"
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* PUMA X FERRARI BANNER */}
+        <section className="w-full bg-gradient-to-br from-[#1b120c] via-[#2c1e16] to-[#0c0805] py-12 px-5 flex flex-col items-center justify-center text-center text-white relative">
+          <div className="relative z-10 space-y-2">
+            <span className="text-[8px] font-mono tracking-[0.4em] text-[#E6C280] font-bold uppercase block">
+              Official Collaboration
+            </span>
+            <h2 className="text-2xl font-light uppercase tracking-tight text-white font-playfair leading-tight">
+              PUMA x <span className="font-serif italic font-normal text-[#E6C280]">Ferrari</span>
+            </h2>
+            <div className="w-8 h-[1px] bg-[#E6C280]/40 mx-auto my-2" />
+            <p className="text-[10px] font-mono text-stone-300 leading-relaxed max-w-xs mx-auto">
+              Bringing motorsport heritage to high-end luxury streetwear.
+            </p>
+          </div>
+        </section>
+
+        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
+
+        {/* MORE FROM BRAND */}
+        <div className="px-5 py-8 bg-[#E5B53C] text-zinc-950">
+          <h2 className="text-3xl font-black font-sans uppercase tracking-tight leading-none mb-3">
+            {productDetail.brand.toUpperCase()}
+          </h2>
+          <p className="text-xs font-sans leading-relaxed mb-5 font-medium text-zinc-900/80">
+            Discover the full range of authentic streetwear directly from {productDetail.brand}.
+          </p>
+          <Link href={`/mobile/brands/${productDetail.brand.toLowerCase()}`} className="inline-flex items-center justify-center border-2 border-zinc-950 px-6 py-2.5 rounded-full text-[10px] font-bold font-mono uppercase tracking-widest hover:bg-zinc-950 hover:text-[#E5B53C] transition-colors w-max">
+            Shop {productDetail.brand}
+          </Link>
+        </div>
+
+        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
+
+        {/* MORE FROM PUMA (SLIDER) */}
+        <div className="px-5 py-8">
+          <div className="border-b border-zinc-200/70 dark:border-zinc-800/80 pb-3 mb-5">
+            <SectionHeading
+              variant="playfair"
+              className="text-zinc-950 dark:text-zinc-50"
+              title={<>MORE FROM <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">{productDetail.brand.toUpperCase()}</span></>}
+            />
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
+            {similarProducts.map((p) => (
+              <div key={p.id + "_more"} className="w-[45vw] sm:w-[200px] shrink-0 snap-start">
+                <ProductCard
+                  id={p.id}
+                  brand={p.brand}
+                  name={p.name}
+                  price={p.price.toString()}
+                  image={p.image}
+                  basePath="/mobile"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
+
         {/* 12. SIMILAR PRODUCTS */}
         <div className="px-5 py-8">
-          <h3 className="text-sm font-black font-sans uppercase tracking-widest text-zinc-950 dark:text-white mb-6">
-            Similar Products
-          </h3>
+          <div className="border-b border-zinc-200/70 dark:border-zinc-800/80 pb-3 mb-5">
+            <SectionHeading
+              variant="playfair"
+              className="text-zinc-950 dark:text-zinc-50"
+              title={<>SIMILAR <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">PRODUCTS</span></>}
+            />
+          </div>
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
             {similarProducts.map((p) => (
               <div key={p.id} className="w-[45vw] sm:w-[200px] shrink-0 snap-start">
@@ -755,6 +1017,35 @@ export default function MobileProductDetailPage() {
             ))}
           </div>
         </div>
+
+        <div className="h-2 w-full bg-zinc-50 dark:bg-zinc-900" />
+
+        {/* RECENTLY VIEWED */}
+        <div className="px-5 py-8">
+          <div className="border-b border-zinc-200/70 dark:border-zinc-800/80 pb-3 mb-5">
+            <SectionHeading
+              variant="playfair"
+              className="text-zinc-950 dark:text-zinc-50"
+              title={<>RECENTLY <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">VIEWED</span></>}
+            />
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x">
+            {recentlyViewed.map((p) => (
+              <div key={p.id} className="w-[45vw] sm:w-[200px] shrink-0 snap-start">
+                <ProductCard
+                  id={p.id}
+                  brand={p.brand}
+                  name={p.name}
+                  price={p.price.toString()}
+                  image={p.image}
+                  basePath="/mobile"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        
       </div>
 
       {/* ─── TOAST NOTIFICATION ─── */}

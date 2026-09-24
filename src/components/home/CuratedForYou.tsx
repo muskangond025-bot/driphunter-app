@@ -107,37 +107,12 @@ export default function CuratedForYou({ basePath = "" }: { basePath?: string }) 
           />
         </div>
 
-        {/* Desktop Container */}
-        <div className="hidden md:grid grid-cols-1 gap-12 lg:gap-16">
+        {/* Container for Desktop & Mobile */}
+        <div className="grid grid-cols-1 gap-12 lg:gap-16">
           {curatedLooks.map((look) => (
             <CuratedLookCard key={look.id} look={look} isVisible={isVisible} />
           ))}
         </div>
-      </div>
-
-      {/* Mobile Horizontal Carousel Container */}
-      <div 
-        className={`md:hidden w-full flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 select-none scroll-smooth flex-nowrap px-4 snap-x snap-mandatory pb-6 transition-all duration-700 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
-      >
-        {curatedLooks[0].items.map((item, i) => (
-          <div 
-            key={item.id} 
-            className="w-[155px] sm:w-[170px] shrink-0 flex flex-col justify-between snap-start"
-          >
-            <ProductCard 
-              id={item.id}
-              name={item.name}
-              brand="DripHunter"
-              price={`₹${item.price}`}
-              image={item.image}
-              inStock={true}
-              basePath={basePath} 
-            />
-          </div>
-        ))}
-        <div className="w-4 shrink-0 pointer-events-none" />
       </div>
     </section>
   );
