@@ -718,20 +718,20 @@ export default function MobileProductDetailPage() {
                 The Wardrobe ({tryOnWardrobe.length})
               </h3>
               
-              <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-2 scrollbar-thin max-h-[300px]">
+              <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory gap-3 pb-2 -mx-5 px-5">
                 {tryOnWardrobe.map((item, idx) => {
                   const isSelected = selectedTryOnItem === idx;
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleSelectWardrobeItem(idx)}
-                      className={`text-left p-3 rounded-2xl transition-all duration-300 border ${
+                      className={`text-left p-2.5 rounded-2xl transition-all duration-300 border shrink-0 snap-center w-[130px] flex flex-col ${
                         isSelected
                           ? "border-[#6F4E37] dark:border-[#E6C280] bg-white dark:bg-zinc-800 shadow-sm"
                           : "border-transparent bg-transparent"
                       }`}
                     >
-                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 mb-3">
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-950 mb-2 shrink-0">
                         <Image
                           src={item.image}
                           alt={item.name}
@@ -832,42 +832,42 @@ export default function MobileProductDetailPage() {
                 </span>
               </div>
               
-              <div className="flex flex-col gap-2">
+              <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory gap-3 pb-2 -mx-5 px-5">
                 {stylingItems.map((item) => {
                   const isActive = styledItems[item.id];
                   return (
                     <div
                       key={item.id}
                       onClick={() => toggleStyledItem(item.id)}
-                      className={`group flex items-center gap-3 p-2.5 rounded-2xl cursor-pointer transition-all duration-300 border ${
+                      className={`group flex flex-col gap-2 p-2 w-[140px] shrink-0 snap-center rounded-2xl cursor-pointer transition-all duration-300 border relative ${
                         isActive
                           ? "bg-white dark:bg-zinc-800/80 border-zinc-300 dark:border-zinc-600 shadow-sm"
-                          : "bg-transparent border-transparent"
+                          : "bg-white/50 dark:bg-zinc-800/40 border-transparent"
                       }`}
                     >
-                      <div className="relative w-16 h-20 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 shrink-0">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
-                      </div>
-                      <div className="flex-grow overflow-hidden">
-                        <span className="text-[8.5px] font-mono tracking-widest text-zinc-400 uppercase font-bold block mb-0.5 truncate">
-                          {item.color}
-                        </span>
-                        <h5 className={`text-[11px] font-semibold transition-colors duration-300 truncate ${isActive ? "text-[#6F4E37] dark:text-[#E6C280]" : "text-zinc-900 dark:text-zinc-100"}`}>
-                          {item.name}
-                        </h5>
-                        <div className="mt-1">
-                          <strong className="text-[11px] font-mono text-zinc-900 dark:text-zinc-100">
-                            ₹{item.price.toLocaleString()}
-                          </strong>
-                        </div>
-                      </div>
-                      <div className="pr-2 shrink-0">
+                      <div className="absolute top-3 right-3 z-10">
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 ${
                           isActive 
                             ? "bg-[#6F4E37] border-[#6F4E37] text-white" 
-                            : "border-zinc-300 dark:border-zinc-700 text-transparent"
+                            : "bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm border-zinc-300 dark:border-zinc-700 text-transparent"
                         }`}>
                           {isActive && <Check className="w-3 h-3 stroke-[3]" />}
+                        </div>
+                      </div>
+                      <div className="relative w-full h-[160px] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 shrink-0">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
+                      </div>
+                      <div className="flex flex-col flex-grow px-1 pb-1">
+                        <span className="text-[8.5px] font-mono tracking-widest text-zinc-400 uppercase font-bold block mb-0.5 truncate">
+                          {item.color}
+                        </span>
+                        <h5 className={`text-[11px] font-semibold leading-tight transition-colors duration-300 line-clamp-2 ${isActive ? "text-[#6F4E37] dark:text-[#E6C280]" : "text-zinc-900 dark:text-zinc-100"}`}>
+                          {item.name}
+                        </h5>
+                        <div className="mt-auto pt-1.5">
+                          <strong className="text-[12px] font-mono text-zinc-900 dark:text-zinc-100">
+                            ₹{item.price.toLocaleString()}
+                          </strong>
                         </div>
                       </div>
                     </div>

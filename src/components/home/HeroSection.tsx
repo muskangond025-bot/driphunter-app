@@ -58,7 +58,7 @@ export default function HeroSection() {
           preload="auto"
           disablePictureInPicture
           disableRemotePlayback
-          className="w-full h-full object-cover transform-gpu will-change-transform"
+          className="w-full h-full object-fill transform-gpu will-change-transform"
         />
       </div>
     </section>

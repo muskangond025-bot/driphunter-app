@@ -229,50 +229,8 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
 
   const featured = featuredSlides[slideIdx];
 
-  return (
-    <section className="bg-[#FAF8F5] dark:bg-zinc-950 text-black dark:text-white py-6 md:py-10 border-b border-zinc-200/60 dark:border-zinc-900 overflow-hidden flex flex-col">
-      {/* Editorial Luxury Header (Desktop Only) */}
-      <div className="hidden lg:block w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-8">
-        <div className="border-b border-zinc-200/70 dark:border-zinc-800/80 pb-6">
-          <SectionHeading
-            variant="playfair"
-            className="text-zinc-950 dark:text-zinc-50"
-            title={<>New <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Arrivals</span></>}
-            eyebrow={
-              <div className="flex items-center gap-2.5 mb-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#6F4E37] dark:bg-[#E6C280] animate-pulse" />
-                <span className="text-xs font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
-                  Archive Release &apos;26
-                </span>
-              </div>
-            }
-            action={
-              <div className="flex flex-col items-end gap-3 max-w-md w-auto">
-                <p className="text-[13px] text-zinc-500 dark:text-zinc-400 font-sans font-light leading-relaxed text-right">
-                  Curated luxury wardrobe additions. Explore flowing silks, sculptural tailoring, and premium everyday couture.
-                </p>
-                <Link
-                  href={basePath === "/mobile" ? `${basePath}/categories` : `${basePath}/explore`}
-                  className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-wider text-zinc-900 dark:text-zinc-100 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors group"
-                >
-                  <span>EXPLORE ALL DROPS</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </Link>
-              </div>
-            }
-          />
-        </div>
-      </div>
-
-      {/* Split Hero Layout: Left Lookbook Hero Slide & Right Culture-Circle Horizontal Scroller */}
-      <div
-        ref={ref}
-        className={`w-full px-4 sm:px-8 md:px-12 lg:pl-16 lg:pr-0 xl:pl-24 flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch transition-all duration-1000 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
-      >
-        {/* Left Editorial Lookbook Card */}
-        <div className="w-full lg:w-[32%] xl:w-[30%] shrink-0 relative bg-zinc-950 rounded-[20px] lg:rounded-[28px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group flex flex-col justify-between p-4 sm:p-5 lg:p-7 aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:min-h-[480px] border border-zinc-200/50 dark:border-zinc-800/80 order-1">
+  const lookbookCardContent = (
+    <>
           {/* Background Slides with Ken-Burns Transition */}
           <div className="absolute inset-0 z-0 select-none">
             {featuredSlides.map((s, i) => (
@@ -316,13 +274,13 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
           <div className="relative z-20 flex items-center justify-between w-full">
             <div className="backdrop-blur-md bg-black/40 border border-white/15 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-[#E6C280] animate-pulse" />
-              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-200">
+              <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-200 truncate max-w-[120px] sm:max-w-none">
                 {featured.tagline}
               </span>
             </div>
 
             {/* Slide Index Counter */}
-            <div className="text-[11px] font-mono font-bold text-white/80 tracking-widest backdrop-blur-md bg-black/30 border border-white/10 px-2.5 py-0.5 rounded-full">
+            <div className="text-[11px] font-mono font-bold text-white/80 tracking-widest backdrop-blur-md bg-black/30 border border-white/10 px-2.5 py-0.5 rounded-full shrink-0">
               0{slideIdx + 1} <span className="text-white/40">/</span> 0{featuredSlides.length}
             </div>
           </div>
@@ -364,7 +322,7 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
             <div className="mt-3 lg:mt-4 pt-3 lg:pt-3.5 border-t border-white/10 flex items-center justify-between">
               <Link
                 href={`${basePath}${featured.link}`}
-                className="inline-flex h-10 lg:h-11 px-4 bg-white/10 rounded-full items-center justify-center gap-2 text-[10px] lg:text-xs font-mono font-bold tracking-wider text-white hover:bg-white/20 transition-colors group/link active:scale-[0.98]"
+                className="inline-flex h-9 lg:h-11 px-3 lg:px-4 bg-white/10 rounded-full items-center justify-center gap-2 text-[10px] lg:text-xs font-mono font-bold tracking-wider text-white hover:bg-white/20 transition-colors group/link active:scale-[0.98]"
               >
                 <span>EXPLORE</span>
                 <ArrowRight className="w-3 h-3 lg:w-3.5 lg:h-3.5 group-hover/link:translate-x-1 transition-transform text-[#E6C280]" />
@@ -385,6 +343,54 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
               </div>
             </div>
           </div>
+    </>
+  );
+
+  return (
+    <section className="bg-[#FAF8F5] dark:bg-zinc-950 text-black dark:text-white py-6 md:py-10 border-b border-zinc-200/60 dark:border-zinc-900 overflow-hidden flex flex-col">
+      {/* Editorial Luxury Header (Desktop Only) */}
+      <div className="hidden lg:block w-full max-w-[1600px] mx-auto px-6 sm:px-12 md:px-16 lg:px-20 mb-8">
+        <div className="border-b border-zinc-200/70 dark:border-zinc-800/80 pb-6">
+          <SectionHeading
+            variant="playfair"
+            className="text-zinc-950 dark:text-zinc-50"
+            title={<>New <span className="font-serif italic font-normal text-[#6F4E37] dark:text-[#E6C280]">Arrivals</span></>}
+            eyebrow={
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#6F4E37] dark:bg-[#E6C280] animate-pulse" />
+                <span className="text-xs font-semibold tracking-[0.25em] text-[#6F4E37] dark:text-[#E6C280] uppercase font-mono">
+                  Archive Release &apos;26
+                </span>
+              </div>
+            }
+            action={
+              <div className="flex flex-col items-end gap-3 max-w-md w-auto">
+                <p className="text-[13px] text-zinc-500 dark:text-zinc-400 font-sans font-light leading-relaxed text-right">
+                  Curated luxury wardrobe additions. Explore flowing silks, sculptural tailoring, and premium everyday couture.
+                </p>
+                <Link
+                  href={basePath === "/mobile" ? `${basePath}/categories` : `${basePath}/explore`}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-wider text-zinc-900 dark:text-zinc-100 hover:text-[#6F4E37] dark:hover:text-[#E6C280] transition-colors group"
+                >
+                  <span>EXPLORE ALL DROPS</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
+              </div>
+            }
+          />
+        </div>
+      </div>
+
+      {/* Split Hero Layout: Left Lookbook Hero Slide & Right Culture-Circle Horizontal Scroller */}
+      <div
+        ref={ref}
+        className={`w-full px-4 sm:px-8 md:px-12 lg:pl-16 lg:pr-0 xl:pl-24 flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch transition-all duration-1000 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
+        {/* Left Editorial Lookbook Card (Desktop Only) */}
+        <div className="hidden lg:flex w-full lg:w-[32%] xl:w-[30%] shrink-0 relative bg-zinc-950 rounded-[20px] lg:rounded-[28px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group flex-col justify-between p-4 sm:p-5 lg:p-7 aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:min-h-[480px] border border-zinc-200/50 dark:border-zinc-800/80 order-1">
+          {lookbookCardContent}
         </div>
 
         {/* Mobile Header (Hidden on Desktop) */}
@@ -419,6 +425,11 @@ export default function NewArrivals({ basePath = "" }: { basePath?: string }) {
           onScroll={handleScroll}
           className="w-full lg:flex-1 flex items-stretch overflow-x-auto scrollbar-none py-2 gap-3 lg:gap-5 select-none scroll-smooth flex-nowrap px-1 snap-x snap-mandatory md:snap-none pb-6 order-3"
         >
+          {/* Mobile Lookbook Card (Hidden on Desktop) */}
+          <div className="lg:hidden w-[280px] sm:w-[320px] shrink-0 relative bg-zinc-950 rounded-[20px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group flex flex-col justify-between p-4 sm:p-5 aspect-[4/5] sm:aspect-[16/10] border border-zinc-200/50 dark:border-zinc-800/80 snap-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            {lookbookCardContent}
+          </div>
+
           {products.slice(0, 6).map((p, i) => (
             <div 
               key={p.id} 

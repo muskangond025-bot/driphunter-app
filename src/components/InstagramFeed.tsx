@@ -159,24 +159,6 @@ export default function InstagramFeed({ basePath = "" }: { basePath?: string }) 
         </div>
       )}
 
-      {basePath !== "/mobile" && (
-        <style>{`
-          @keyframes marquee-insta-scroll {
-            0% {
-              transform: translateX(0%);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-          .animate-marquee-insta {
-            animation: marquee-insta-scroll 45s linear infinite;
-          }
-          .animate-marquee-insta:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
-      )}
 
       <style>{`
         @keyframes fadeIn {
@@ -212,15 +194,11 @@ export default function InstagramFeed({ basePath = "" }: { basePath?: string }) 
       {/* Scrolling Track of Instagram Post Cards */}
       <div
         ref={ref}
-        className={`w-full overflow-hidden flex transition-all duration-1000 ease-out ${
+        className={`w-full transition-all duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <div className={
-          basePath === "/mobile"
-            ? "flex overflow-x-auto scrollbar-none snap-x snap-mandatory gap-4 py-4 px-4 scroll-p-4 w-full"
-            : "animate-marquee-insta flex gap-6 py-4 px-3"
-        }>
+        <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory gap-4 md:gap-6 py-4 px-4 md:px-6 scroll-p-4 md:scroll-p-6 w-full">
           {(basePath === "/mobile" ? posts : [...posts, ...posts]).map((post, idx) => {
             const postKey = `${post.id}-${idx}`;
             const isLiked = likedPosts[post.id];
@@ -229,7 +207,7 @@ export default function InstagramFeed({ basePath = "" }: { basePath?: string }) 
             return (
               <div
                 key={postKey}
-                className={`${basePath === "/mobile" ? "w-[80vw] max-w-[300px] snap-center" : "w-72 sm:w-80"} shrink-0 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-3xl overflow-hidden flex flex-col justify-between shadow-[0_4px_15px_rgba(0,0,0,0.01)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.04)] hover:-translate-y-1.5 transition-all duration-500 group relative`}
+                className={`${basePath === "/mobile" ? "w-[80vw] max-w-[300px]" : "w-[80vw] max-w-[300px] md:max-w-none md:w-72 sm:w-80"} shrink-0 snap-center bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-3xl overflow-hidden flex flex-col justify-between shadow-[0_4px_15px_rgba(0,0,0,0.01)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.04)] hover:-translate-y-1.5 transition-all duration-500 group relative`}
               >
                 {/* --- INLINE OVERLAYS --- */}
                 {activeOptionsPost === postKey && (
